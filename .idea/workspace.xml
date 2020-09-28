@@ -13,9 +13,7 @@
     <list default="true" id="a5bfddc9-50ed-4bfc-94b3-c22ca7722231" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Development-stages/1.Resnet_Genaretor.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/1.Resnet_Genaretor.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Development-stages/2.Discriminator.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/2.Discriminator.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Development-stages/3.Custom_Dataset.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/3.Custom_Dataset.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/3.Custom_Dataset.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/3.Custom_Dataset.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Underwater-image-enhancement.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Underwater-image-enhancement.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -70,7 +68,8 @@
       <updated>1601021568214</updated>
       <workItem from="1601021569623" duration="897000" />
       <workItem from="1601103081209" duration="2845000" />
-      <workItem from="1601276838110" duration="936000" />
+      <workItem from="1601276838110" duration="1167000" />
+      <workItem from="1601296562545" duration="1363000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit&#10;&#10;- Resnet Generator added&#10;- Discriminator added&#10;- Other project files added">
       <created>1601022450101</created>
@@ -100,7 +99,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601105225395</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="refactor: Intellij Idea configs done">
+      <created>1601281310498</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1601281310498</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -124,13 +130,14 @@
     <MESSAGE value="refactor: 1.Resnet_Genaretor.ipynb 2.Discriminator.ipynb moved to Development stages" />
     <MESSAGE value="feat: Added Custom Dataset" />
     <MESSAGE value="refactor: .gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: .gitignore" />
+    <MESSAGE value="refactor: Intellij Idea configs done" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: Intellij Idea configs done" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="249" y="0" key="#Project_Structure" timestamp="1601276897145">
+    <state x="249" y="0" key="#Project_Structure" timestamp="1601297875837">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="249" y="0" key="#Project_Structure/0.0.1536.824@0.0.1536.824" timestamp="1601276897145" />
+    <state x="249" y="0" key="#Project_Structure/0.0.1536.824@0.0.1536.824" timestamp="1601297875837" />
     <state x="574" y="128" key="#com.intellij.ide.util.MemberChooser" timestamp="1601022243229">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -163,10 +170,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="277" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1601281220399" />
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1601105242614">
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1601281315825">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1601105242614" />
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1601281315825" />
     <state x="435" y="95" key="new project wizard" timestamp="1601022045950">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

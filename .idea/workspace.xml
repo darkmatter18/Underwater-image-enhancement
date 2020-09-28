@@ -11,9 +11,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a5bfddc9-50ed-4bfc-94b3-c22ca7722231" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/model/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/networks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/dataloaders.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/datasets.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +89,7 @@
       <workItem from="1601103081209" duration="2845000" />
       <workItem from="1601276838110" duration="1167000" />
       <workItem from="1601296562545" duration="1363000" />
-      <workItem from="1601298024938" duration="891000" />
+      <workItem from="1601298024938" duration="1187000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit&#10;&#10;- Resnet Generator added&#10;- Discriminator added&#10;- Other project files added">
       <created>1601022450101</created>
@@ -133,7 +133,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601298173724</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="feat: Networks added">
+      <created>1601299035959</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1601299035959</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -159,7 +166,8 @@
     <MESSAGE value="refactor: .gitignore" />
     <MESSAGE value="refactor: Intellij Idea configs done" />
     <MESSAGE value="feat: comments added" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: comments added" />
+    <MESSAGE value="feat: Networks added" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: Networks added" />
   </component>
   <component name="WindowStateProjectService">
     <state x="249" y="0" key="#Project_Structure" timestamp="1601297875837">
@@ -198,10 +206,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="277" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1601281220399" />
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1601281315825">
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1601299005050">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1601281315825" />
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1601299005050" />
     <state x="435" y="95" key="new project wizard" timestamp="1601022045950">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

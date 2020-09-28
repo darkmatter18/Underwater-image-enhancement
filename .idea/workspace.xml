@@ -11,8 +11,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a5bfddc9-50ed-4bfc-94b3-c22ca7722231" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Development-stages/3.Custom_Dataset.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Development-stages/3.Custom_Dataset.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Development-stages/1.Resnet_Genaretor.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/1.Resnet_Genaretor.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Development-stages/2.Discriminator.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/2.Discriminator.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Development-stages/3.Custom_Dataset.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/3.Custom_Dataset.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Underwater-image-enhancement.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Underwater-image-enhancement.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,7 +29,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="JupyterTrust" id="37d257f7-5e3c-4de4-ba1a-ff5e661370ac" />
+  <component name="JupyterTrust" id="6144242b-cbe9-410d-96a6-8e1213dbe7ba" />
   <component name="ProjectId" id="1hzkz9pSklG75RdxKEG8CQYVnrC" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -46,10 +50,15 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.standard" value="" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Problems" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.notebooks.jupyter.connections.configuration.JupyterServerConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\Projects\Underwater-image-enhancement" />
+    </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -61,6 +70,7 @@
       <updated>1601021568214</updated>
       <workItem from="1601021569623" duration="897000" />
       <workItem from="1601103081209" duration="2845000" />
+      <workItem from="1601276838110" duration="936000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit&#10;&#10;- Resnet Generator added&#10;- Discriminator added&#10;- Other project files added">
       <created>1601022450101</created>
@@ -117,10 +127,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="refactor: .gitignore" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="249" y="0" key="#Project_Structure" timestamp="1601022106608">
+    <state x="249" y="0" key="#Project_Structure" timestamp="1601276897145">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="249" y="0" key="#Project_Structure/0.0.1536.824@0.0.1536.824" timestamp="1601022106608" />
+    <state x="249" y="0" key="#Project_Structure/0.0.1536.824@0.0.1536.824" timestamp="1601276897145" />
     <state x="574" y="128" key="#com.intellij.ide.util.MemberChooser" timestamp="1601022243229">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -149,10 +159,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="467" y="116" key="NewModule_or_Project.wizard/0.0.1536.824@0.0.1536.824" timestamp="1601022058352" />
-    <state x="277" y="0" key="SettingsEditor" timestamp="1601022063029">
+    <state x="277" y="0" key="SettingsEditor" timestamp="1601281220399">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="277" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1601022063029" />
+    <state x="277" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1601281220399" />
     <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1601105242614">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -161,6 +171,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="435" y="95" key="new project wizard/0.0.1536.824@0.0.1536.824" timestamp="1601022045950" />
+    <state x="425" y="187" key="run.anything.popup" timestamp="1601281102039">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="425" y="187" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1601281102039" />
     <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1601022304213">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

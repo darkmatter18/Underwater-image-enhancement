@@ -91,7 +91,7 @@
       <workItem from="1601276838110" duration="1167000" />
       <workItem from="1601296562545" duration="1363000" />
       <workItem from="1601298024938" duration="3130000" />
-      <workItem from="1601358566069" duration="12617000" />
+      <workItem from="1601358566069" duration="14161000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit&#10;&#10;- Resnet Generator added&#10;- Discriminator added&#10;- Other project files added">
       <created>1601022450101</created>
@@ -191,7 +191,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601383662955</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="feat: 4.Image_Pool demo added">
+      <created>1601389387480</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1601389387481</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -224,7 +231,8 @@
     <MESSAGE value="feat: train.py added" />
     <MESSAGE value="feat: dataset implemented" />
     <MESSAGE value="feat: image_pool.py added&#10;&#10;- Image pool works as an image buffer that stores previously generated images." />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: image_pool.py added&#10;&#10;- Image pool works as an image buffer that stores previously generated images." />
+    <MESSAGE value="feat: 4.Image_Pool demo added" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 4.Image_Pool demo added" />
   </component>
   <component name="WindowStateProjectService">
     <state x="249" y="0" key="#Project_Structure" timestamp="1601297875837">

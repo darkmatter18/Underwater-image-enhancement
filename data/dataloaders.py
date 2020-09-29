@@ -1,4 +1,5 @@
-import torch
+from torch.utils.data import DataLoader
+
 
 class CustomDatasetDataLoader:
     """Wrapper class of Dataset class that performs multi-threaded data loading"""
@@ -18,7 +19,7 @@ class CustomDatasetDataLoader:
         self.batch_size = batch_size
         self.max_dataset_size = max_dataset_size
         print("dataset [%s] was created" % type(self.dataset).__name__)
-        self.dataloader = torch.utils.data.DataLoader(
+        self.dataloader = DataLoader(
             self.dataset,
             batch_size=batch_size,
             shuffle=not serial_batches,

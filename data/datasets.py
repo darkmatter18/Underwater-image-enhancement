@@ -1,12 +1,12 @@
 import os
-import torch
 import random
 import numpy as np
 from PIL import Image
+from torch.utils.data import Dataset
 import torchvision.transforms as transforms
 
 
-class CustomDataset(torch.utils.data.Dataset):
+class CustomDataset(Dataset):
     IMG_EXTENSIONS = [
         '.jpg', '.JPG', '.jpeg', '.JPEG',
         '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP',

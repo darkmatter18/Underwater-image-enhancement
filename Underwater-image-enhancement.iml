@@ -11,6 +11,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/.ipynb_checkpoints" />
       <excludeFolder url="file://$MODULE_DIR$/Dataset" />
+      <excludeFolder url="file://$MODULE_DIR$/checkpoints" />
       <excludeFolder url="file://$MODULE_DIR$/runs" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.8 (cv)" jdkType="Python SDK" />

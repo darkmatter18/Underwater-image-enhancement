@@ -37,6 +37,8 @@ class BaseOptions:
                             help='if specified, do flip the images for data augmentation')
         parser.add_argument('--load_size', type=int, default=286, help='scale images to this size')
         parser.add_argument('--crop_size', type=int, default=256, help='then crop to this size')
+        parser.add_argument('--batch_size', type=int, default=1, help='input batch size')
+        parser.add_argument('--num_threads', default=0, type=int, help='# threads for loading data')
 
         return parser
 

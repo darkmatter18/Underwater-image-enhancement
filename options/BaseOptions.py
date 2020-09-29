@@ -5,6 +5,7 @@ from utils import mkdirs
 
 class BaseOptions:
     def __init__(self):
+        self.isTrain = False
         self.parser = argparse.ArgumentParser(prog='Underwater Image Enhancement',
                                          description='A very deep application that enhances Underwater Images',
                                          formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -69,6 +70,7 @@ class BaseOptions:
 
     def parse(self):
         opt = self.parser.parse_args()
+        opt.isTrain = self.isTrain
         self.print_options(opt)
 
         return opt

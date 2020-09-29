@@ -11,9 +11,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a5bfddc9-50ed-4bfc-94b3-c22ca7722231" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/data/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/dataloaders.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/datasets.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/options/BaseOptions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/options/TrainOptions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/options/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,6 +57,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.standard" value="" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Problems" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -65,13 +69,15 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="class" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -89,7 +95,8 @@
       <workItem from="1601103081209" duration="2845000" />
       <workItem from="1601276838110" duration="1167000" />
       <workItem from="1601296562545" duration="1363000" />
-      <workItem from="1601298024938" duration="1187000" />
+      <workItem from="1601298024938" duration="3130000" />
+      <workItem from="1601358566069" duration="3723000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit&#10;&#10;- Resnet Generator added&#10;- Discriminator added&#10;- Other project files added">
       <created>1601022450101</created>
@@ -140,7 +147,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601299035959</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="feat: dataloaders.py and datasets.py added">
+      <created>1601299896591</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1601299896591</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -167,7 +181,8 @@
     <MESSAGE value="refactor: Intellij Idea configs done" />
     <MESSAGE value="feat: comments added" />
     <MESSAGE value="feat: Networks added" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: Networks added" />
+    <MESSAGE value="feat: dataloaders.py and datasets.py added" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: dataloaders.py and datasets.py added" />
   </component>
   <component name="WindowStateProjectService">
     <state x="249" y="0" key="#Project_Structure" timestamp="1601297875837">

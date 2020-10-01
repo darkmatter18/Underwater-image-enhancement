@@ -96,6 +96,18 @@ class CycleGan:
         self.image_paths = x['A_paths' if AtoB else 'B_paths']
 
 
+    def set_requires_grad(self, nets, requires_grad=False):
+        """
+        Set requires_grad=False for all the networks to avoid unnecessary computations
+        :param nets: a list of networks
+        :param requires_grad: whether the networks require gradients or not
+        """
+        if not isinstance(nets, list):
+            nets = [nets]
+        for net in nets:
+            if net is not None:
+                for param in net.parameters():
+                    param.requires_grad = requires_grad
 
     def eval(self):
         """Make models eval mode during test time"""

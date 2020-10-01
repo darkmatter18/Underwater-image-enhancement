@@ -91,7 +91,7 @@
       <workItem from="1601296562545" duration="1363000" />
       <workItem from="1601298024938" duration="3130000" />
       <workItem from="1601358566069" duration="16474000" />
-      <workItem from="1601526080472" duration="5144000" />
+      <workItem from="1601526080472" duration="5611000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit&#10;&#10;- Resnet Generator added&#10;- Discriminator added&#10;- Other project files added">
       <created>1601022450101</created>
@@ -272,7 +272,8 @@
     <MESSAGE value="feat: isTrain opt added" />
     <MESSAGE value="feat: Various padding types added in Resnet block" />
     <MESSAGE value="feat: Various norm types added in G and D" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: Various norm types added in G and D" />
+    <MESSAGE value="feat: build_D and build_G added" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: build_D and build_G added" />
   </component>
   <component name="WindowStateProjectService">
     <state x="249" y="0" key="#Project_Structure" timestamp="1601297875837">

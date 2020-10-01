@@ -90,7 +90,8 @@ class ResnetBlock(nn.Module):
 class ResnetGenerator(nn.Module):
     """Resnet-based generator that consists of Resnet blocks between a few downsampling/upsampling operations.
 
-    We adapt Torch code and idea from Justin Johnson's neural style transfer project(https://github.com/jcjohnson/fast-neural-style)
+    We adapt Torch code and idea from Justin Johnson's neural style transfer project
+    https://github.com/jcjohnson/fast-neural-style
     """
 
     def __init__(self, input_nc, output_nc, ngf=64, norm_layer=nn.BatchNorm2d, padding_type='reflect',
@@ -184,7 +185,6 @@ class NLayerDiscriminator(nn.Module):
 
         # Next n conv layers
         nf_mult = 1
-        nf_mult_prev = 1
         for n in range(1, n_layers):  # gradually increase the number of filters
             nf_mult_prev = nf_mult
             nf_mult = min(2 ** n, 8)
@@ -209,9 +209,9 @@ class NLayerDiscriminator(nn.Module):
             nn.Conv2d(ndf * nf_mult, 1, kernel_size=kw, stride=1, padding=padw)]  # output 1 channel prediction map
         self.model = nn.Sequential(*sequence)
 
-    def forward(self, input):
+    def forward(self, x):
         """Standard forward."""
-        return self.model(input)
+        return self.model(x)
 
 
 class GANLoss(nn.Module):
@@ -296,7 +296,7 @@ def get_norm_layer(norm_type='instance'):
     elif norm_type == 'instance':
         norm_layer = functools.partial(nn.InstanceNorm2d, affine=False, track_running_stats=False)
     elif norm_type == 'none':
-        def norm_layer(x):
+        def norm_layer():
             return Identity()
     else:
         raise NotImplementedError('normalization layer [%s] is not found' % norm_type)

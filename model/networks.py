@@ -1,22 +1,24 @@
 import torch
 import torch.nn as nn
+from torch.nn import init
 
 
 class ResnetBlock(nn.Module):
     """Define a Resnet block"""
 
-    def __init__(self, dim, norm_layer=nn.BatchNorm2d, reflect_padding=True, use_dropout=True, use_bias=True):
+    def __init__(self, dim, norm_layer=nn.BatchNorm2d, padding_type='reflect', use_dropout=True, use_bias=True):
         """Initialize the Resnet block
 
         Construct a convolutional block.
 
-        :param dim: (int)               -- the number of channels in the conv layer.
-        :param norm_layer:              -- normalization layer
-        :param reflect_padding: (bool)  -- add ReflectionPad2d or not
-        :param use_dropout: (bool)      -- if use dropout layers.
-        :param use_bias: (bool)         -- if the conv layer uses bias or not
+        :param dim: the number of channels in the conv layer.
+        :param norm_layer: normalization layer
+        :param padding_type: the name of padding layer: reflect | replicate | zero
+        :param use_dropout: if use dropout layers.
+        :param use_bias: if the conv layer uses bias or not
 
         Returns a conv block (with a conv layer, a normalization layer, and a non-linearity layer (ReLU))
+
 
         A resnet block is a conv block with skip connections
         We construct a conv block with build_conv_block function,
@@ -25,29 +27,33 @@ class ResnetBlock(nn.Module):
         """
 
         super(ResnetBlock, self).__init__()
-        self.conv_block = self.build_conv_block(dim, norm_layer, reflect_padding, use_dropout, use_bias)
+        self.conv_block = self.build_conv_block(dim, norm_layer, padding_type, use_dropout, use_bias)
 
-    def build_conv_block(self, dim, norm_layer, reflect_padding, use_dropout, use_bias):
+
+    def build_conv_block(self, dim, norm_layer, padding_type, use_dropout, use_bias):
         """Initialize the Resnet block
 
         Construct a convolutional block.
 
-        :param dim: (int)               -- the number of channels in the conv layer.
-        :param norm_layer:              -- normalization layer
-        :param reflect_padding: (bool)  -- add ReflectionPad2d or not
-        :param use_dropout: (bool)      -- if use dropout layers.
-        :param use_bias: (bool)         -- if the conv layer uses bias or not
+        :param dim: the number of channels in the conv layer.
+        :param norm_layer: normalization layer
+        :param padding_type: the name of padding layer: reflect | replicate | zero
+        :param use_dropout: if use dropout layers.
+        :param use_bias: if the conv layer uses bias or not
         :return: conv block (with a conv layer, a normalization layer, and a non-linearity layer (ReLU))
         """
-
         conv_block = []
 
         # First Reflection Padding
         p = 0
-        if reflect_padding:
+        if padding_type == 'reflect':
             conv_block += [nn.ReflectionPad2d(1)]
-        else:
+        elif padding_type == 'replicate':
+            conv_block += [nn.ReplicationPad2d(1)]
+        elif padding_type == 'zero':
             p = 1
+        else:
+            raise NotImplementedError('padding [%s] is not implemented' % padding_type)
 
         # First conv layer
         conv_block += [nn.Conv2d(dim, dim, kernel_size=3, padding=p, bias=use_bias),
@@ -60,10 +66,14 @@ class ResnetBlock(nn.Module):
 
         # First Reflection Padding
         p = 0
-        if reflect_padding:
+        if padding_type == 'reflect':
             conv_block += [nn.ReflectionPad2d(1)]
-        else:
+        elif padding_type == 'replicate':
+            conv_block += [nn.ReplicationPad2d(1)]
+        elif padding_type == 'zero':
             p = 1
+        else:
+            raise NotImplementedError('padding [%s] is not implemented' % padding_type)
 
         conv_block += [nn.Conv2d(dim, dim, kernel_size=3, padding=p, bias=use_bias),
                        norm_layer(dim)]
@@ -80,24 +90,22 @@ class ResnetBlock(nn.Module):
 class ResnetGenerator(nn.Module):
     """Resnet-based generator that consists of Resnet blocks between a few downsampling/upsampling operations.
 
-    We adapt Torch code and idea from Justin Johnson's neural style transfer project
-    Link: https://github.com/jcjohnson/fast-neural-style
+    We adapt Torch code and idea from Justin Johnson's neural style transfer project(https://github.com/jcjohnson/fast-neural-style)
     """
 
-    def __init__(self, input_nc, output_nc, ngf=64, norm_layer=nn.BatchNorm2d, use_dropout=False, n_blocks=9,
-                 reflect_padding=True):
+    def __init__(self, input_nc, output_nc, ngf=64, norm_layer=nn.BatchNorm2d, padding_type='reflect', use_dropout=False, n_blocks=9):
         """Construct a Resnet-based generator
 
-        :param input_nc: (int)          -- the number of channels in input images
-        :param output_nc: (int)         -- the number of channels in output images
-        :param ngf: (int)               -- the number of filters in the last conv layer
-        :param norm_layer:              -- normalization layer
-        :param use_dropout: (bool)      -- if use dropout layers
-        :param n_blocks: (int)          -- the number of ResNet blocks
-        :param reflect_padding: (bool)  -- ReflectionPad2d or not
+        :param input_nc: the number of channels in input images
+        :param output_nc: the number of channels in output images
+        :param ngf: the number of filters in the last conv layer
+        :param norm_layer: normalization layer
+        :param padding_type: the name of padding layer: reflect | replicate | zero
+        :param use_dropout: if use dropout layers
+        :param n_blocks: the number of ResNet blocks
         """
 
-        assert (n_blocks >= 0)
+        assert(n_blocks >= 0)
         super(ResnetGenerator, self).__init__()
 
         # use_bias is set false if BatchNorm2d is used as norm layer
@@ -121,9 +129,8 @@ class ResnetGenerator(nn.Module):
 
         # n_blocks resnet layers
         for i in range(n_blocks):
-            model += [
-                ResnetBlock(ngf * mult, norm_layer=norm_layer, reflect_padding=reflect_padding, use_dropout=use_dropout,
-                            use_bias=use_bias)]
+
+            model += [ResnetBlock(ngf * mult, norm_layer=norm_layer, padding_type=padding_type, use_dropout=use_dropout, use_bias=use_bias)]
 
         # Add up sampling Layers
         for i in range(n_down_sampling):
@@ -260,3 +267,59 @@ class GANLoss(nn.Module):
             else:
                 _loss = prediction.mean()
         return _loss
+
+
+def init_weights(net, init_type='normal', init_gain=0.02):
+    """Initialize network weights.
+
+    Parameters:
+        net (network)   -- network to be initialized
+        init_type (str) -- the name of an initialization method: normal | xavier | kaiming | orthogonal
+        init_gain (float)    -- scaling factor for normal, xavier and orthogonal.
+
+    We use 'normal' in the original pix2pix and CycleGAN paper. But xavier and kaiming might
+    work better for some applications. Feel free to try yourself.
+    """
+
+    def init_func(m):  # define the initialization function
+        classname = m.__class__.__name__
+        if hasattr(m, 'weight') and (classname.find('Conv') != -1 or classname.find('Linear') != -1):
+            if init_type == 'normal':
+                init.normal_(m.weight.data, 0.0, init_gain)
+            elif init_type == 'xavier':
+                init.xavier_normal_(m.weight.data, gain=init_gain)
+            elif init_type == 'kaiming':
+                init.kaiming_normal_(m.weight.data, a=0, mode='fan_in')
+            elif init_type == 'orthogonal':
+                init.orthogonal_(m.weight.data, gain=init_gain)
+            else:
+                raise NotImplementedError('initialization method [%s] is not implemented' % init_type)
+            if hasattr(m, 'bias') and m.bias is not None:
+                init.constant_(m.bias.data, 0.0)
+        elif classname.find(
+                'BatchNorm2d') != -1:  # BatchNorm Layer's weight is not a matrix; only normal distribution applies.
+            init.normal_(m.weight.data, 1.0, init_gain)
+            init.constant_(m.bias.data, 0.0)
+
+    print('initialize network with %s' % init_type)
+    net.apply(init_func)  # apply the initialization function <init_func>
+
+
+def init_net(net, init_type='normal', init_gain=0.02, gpu_ids=[]):
+    """Initialize a network:
+    1. register CPU/GPU device (with multi-GPU support);
+    2. initialize the network weights
+
+    :param net: the network to be initialized
+    :param init_type: the name of an initialization method: normal | xavier | kaiming | orthogonal
+    :param init_gain: scaling factor for normal, xavier and orthogonal.
+    :param gpu_ids: which GPUs the network runs on: e.g., 0,1,2
+    :return: an initialized network.
+    """
+
+    if len(gpu_ids) > 0:
+        assert (torch.cuda.is_available())
+        net.to(gpu_ids[0])
+        net = torch.nn.DataParallel(net, gpu_ids)  # multi-GPUs
+    init_weights(net, init_type, init_gain=init_gain)
+    return net

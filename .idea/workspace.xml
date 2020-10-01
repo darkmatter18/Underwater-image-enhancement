@@ -12,8 +12,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a5bfddc9-50ed-4bfc-94b3-c22ca7722231" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/options/BaseOptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/options/BaseOptions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/options/TrainOptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/options/TrainOptions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/1.Resnet_Genaretor.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/1.Resnet_Genaretor.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/networks.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/networks.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,15 +66,13 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -93,7 +91,8 @@
       <workItem from="1601276838110" duration="1167000" />
       <workItem from="1601296562545" duration="1363000" />
       <workItem from="1601298024938" duration="3130000" />
-      <workItem from="1601358566069" duration="16087000" />
+      <workItem from="1601358566069" duration="16474000" />
+      <workItem from="1601526080472" duration="2003000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit&#10;&#10;- Resnet Generator added&#10;- Discriminator added&#10;- Other project files added">
       <created>1601022450101</created>
@@ -214,7 +213,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601393163592</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="feat: isTrain opt added">
+      <created>1601393632005</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1601393632005</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -250,13 +256,18 @@
     <MESSAGE value="feat: 4.Image_Pool demo added" />
     <MESSAGE value="feat: 4.GAN_Loss added" />
     <MESSAGE value="feat: GANLoss added in networks.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: GANLoss added in networks.py" />
+    <MESSAGE value="feat: isTrain opt added" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: isTrain opt added" />
   </component>
   <component name="WindowStateProjectService">
     <state x="249" y="0" key="#Project_Structure" timestamp="1601297875837">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="249" y="0" key="#Project_Structure/0.0.1536.824@0.0.1536.824" timestamp="1601297875837" />
+    <state x="312" y="245" key="#Template_Data_Languages" timestamp="1601526153652">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="312" y="245" key="#Template_Data_Languages/0.0.1536.824@0.0.1536.824" timestamp="1601526153652" />
     <state x="574" y="128" key="#com.intellij.ide.util.MemberChooser" timestamp="1601298291204">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -301,10 +312,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="435" y="95" key="new project wizard/0.0.1536.824@0.0.1536.824" timestamp="1601022045950" />
-    <state x="425" y="187" key="run.anything.popup" timestamp="1601393061457">
+    <state x="425" y="187" key="run.anything.popup" timestamp="1601527245265">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="425" y="187" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1601393061457" />
+    <state x="425" y="187" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1601527245265" />
     <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1601022304213">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

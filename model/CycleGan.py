@@ -58,6 +58,19 @@ class CycleGan:
                                              lr_decay_iters=opt.lr_decay_iters, epoch_count=opt.epoch_count,
                                              n_epochs_decay=opt.n_epochs_decay) for optimizer in self.optimizers]
 
+        # Internal Variables
+        self.real_A = None
+        self.real_B = None
+        self.image_paths = None
+        self.fake_A = None
+        self.fake_B = None
+        self.rec_A = None
+        self.rec_B = None
+        self.idt_A = None
+        self.idt_B = None
+        self.loss_idt_A = None
+        self.loss_idt_B = None
+
     def update_learning_rate(self):
         """Update learning rates for all the networks; called at the end of every epoch"""
         old_lr = self.optimizers[0].param_groups[0]['lr']
@@ -69,6 +82,20 @@ class CycleGan:
 
         lr = self.optimizers[0].param_groups[0]['lr']
         print('learning rate %.7f -> %.7f' % (old_lr, lr))
+
+    def feed_input(self, x):
+        """Unpack input data from the dataloader and perform necessary pre-processing steps.
+
+        :param x: include the data itself and its metadata information.
+
+        The option 'direction' can be used to swap domain A and domain B.
+        """
+        AtoB = self.opt.direction == 'AtoB'
+        self.real_A = x['A' if AtoB else 'B'].to(self.device)
+        self.real_B = x['B' if AtoB else 'A'].to(self.device)
+        self.image_paths = x['A_paths' if AtoB else 'B_paths']
+
+
 
     def eval(self):
         """Make models eval mode during test time"""

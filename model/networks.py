@@ -1,5 +1,6 @@
 import torch
-import torch.nn as nn
+import functools
+from torch import nn
 from torch.nn import init
 
 
@@ -109,7 +110,10 @@ class ResnetGenerator(nn.Module):
         super(ResnetGenerator, self).__init__()
 
         # use_bias is set false if BatchNorm2d is used as norm layer
-        use_bias = norm_layer != nn.BatchNorm2d
+        if type(norm_layer) == functools.partial:
+            use_bias = norm_layer.func == nn.InstanceNorm2d
+        else:
+            use_bias = norm_layer == nn.InstanceNorm2d
 
         # First Conv layer
         model = [nn.ReflectionPad2d(3),
@@ -156,17 +160,21 @@ class NLayerDiscriminator(nn.Module):
     """Defines a PatchGAN discriminator"""
 
     def __init__(self, input_nc, ndf=64, n_layers=3, norm_layer=nn.BatchNorm2d):
-        """Construct a NLayerDiscriminator discriminator
+        """Construct a PatchGAN discriminator
 
-        :param input_nc: (int)  -- the number of channels in input images
-        :param ndf: (int)       -- the number of filters in the last conv layer
-        :param n_layers: (int)  -- the number of conv layers in the discriminator
-        :param norm_layer:      -- normalization layer
+        Parameters:
+            input_nc (int)  -- the number of channels in input images
+            ndf (int)       -- the number of filters in the last conv layer
+            n_layers (int)  -- the number of conv layers in the discriminator
+            norm_layer      -- normalization layer
         """
         super(NLayerDiscriminator, self).__init__()
 
         # use_bias is set false if BatchNorm2d is used as norm layer
-        use_bias = norm_layer != nn.BatchNorm2d
+        if type(norm_layer) == functools.partial:
+            use_bias = norm_layer.func == nn.InstanceNorm2d
+        else:
+            use_bias = norm_layer == nn.InstanceNorm2d
 
         kw = 4
         padw = 1
@@ -197,13 +205,12 @@ class NLayerDiscriminator(nn.Module):
         ]
 
         # Last conv layer
-        sequence += [
-            nn.Conv2d(ndf * nf_mult, 1, kernel_size=kw, stride=1, padding=padw)]  # output 1 channel prediction map
+        sequence += [nn.Conv2d(ndf * nf_mult, 1, kernel_size=kw, stride=1, padding=padw)]  # output 1 channel prediction map
         self.model = nn.Sequential(*sequence)
 
-    def forward(self, x):
+    def forward(self, input):
         """Standard forward."""
-        return self.model(x)
+        return self.model(input)
 
 
 class GANLoss(nn.Module):
@@ -269,6 +276,9 @@ class GANLoss(nn.Module):
         return _loss
 
 
+def get_norm_layer(norm):
+    pass
+
 def init_weights(net, init_type='normal', init_gain=0.02):
     """Initialize network weights.
 
@@ -323,3 +333,25 @@ def init_net(net, init_type='normal', init_gain=0.02, gpu_ids=[]):
         net = torch.nn.DataParallel(net, gpu_ids)  # multi-GPUs
     init_weights(net, init_type, init_gain=init_gain)
     return net
+
+
+def build_G(input_nc=3, output_nc=3, ngf=64, norm='batch', padding_type='reflect', use_dropout=True, n_blocks=9, init_type='normal',
+            init_gain=0.02, gpu_ids=[]):
+    """Create a generator
+
+    :param input_nc: the number of channels in input images
+    :param output_nc: the number of channels in output images
+    :param ngf: the number of filters in the last conv layer
+    :param norm: the name of normalization layers used in the network: batch | instance | none
+    :param padding_type: the name of padding layer: reflect | replicate | zero
+    :param use_dropout: if use dropout layers.
+    :param n_blocks: the number of ResNet blocks
+    :param init_type: the name of our initialization method.
+    :param init_gain: scaling factor for normal, xavier and orthogonal.
+    :param gpu_ids: which GPUs the network runs on: e.g., 0,1,2
+    :return:
+    """
+    norm
+    norm_layer = nn.BatchNorm2d
+    net = ResnetGenerator(input_nc, output_nc, ngf, norm_layer, padding_type, use_dropout, n_blocks)
+    return init_net(net, init_type, init_gain, gpu_ids)

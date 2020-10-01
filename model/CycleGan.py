@@ -95,7 +95,13 @@ class CycleGan:
         self.real_B = x['B' if AtoB else 'A'].to(self.device)
         self.image_paths = x['A_paths' if AtoB else 'B_paths']
 
+    def optimize_parameters(self):
+        # Forward
+        self.forward()
 
+        # Train Generators
+        self.set_requires_grad([self.D_A, self.D_B], False) # Ds require no gradients when optimizing Gs
+        self.optimizer_G.zero_grad()
 
     def forward(self):
         """Run forward pass

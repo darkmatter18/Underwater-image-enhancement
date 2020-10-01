@@ -2,6 +2,7 @@ import torch
 import functools
 from torch import nn
 from torch.nn import init
+from torch.optim import lr_scheduler
 
 
 class ResnetBlock(nn.Module):
@@ -396,3 +397,36 @@ def build_D(input_nc=3, ndf=64, n_layers=3, norm='batch', init_type='normal', in
     norm_layer = get_norm_layer(norm)
     net = NLayerDiscriminator(input_nc, ndf, n_layers, norm_layer)
     return init_net(net, init_type, init_gain, gpu_ids)
+
+
+def get_scheduler(optimizer, lr_policy, n_epochs, lr_decay_iters, epoch_count, n_epochs_decay):
+    """Return a learning rate scheduler
+
+    :param optimizer: the optimizer of the network
+    :param lr_policy: lr_policy is the name of learning rate policy: linear | step | plateau | cosine
+    :param n_epochs: number of epochs with the initial learning rate
+    :param lr_decay_iters: multiply by a gamma every lr_decay_iters iterations
+    :param epoch_count: the starting epoch count, we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>
+    :param n_epochs_decay: number of epochs to linearly decay learning rate to zero
+    :return:
+
+    For 'linear', we keep the same learning rate for the first <opt.n_epochs> epochs
+    and linearly decay the rate to zero over the next <opt.n_epochs_decay> epochs.
+    For other schedulers (step, plateau, and cosine), we use the default PyTorch schedulers.
+    See https://pytorch.org/docs/stable/optim.html for more details.
+    """
+    if lr_policy == 'linear':
+        def lambda_rule(epoch):
+            lr_l = 1.0 - max(0, epoch + epoch_count - n_epochs) / float(n_epochs_decay + 1)
+            return lr_l
+
+        scheduler = lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda_rule)
+    elif lr_policy == 'step':
+        scheduler = lr_scheduler.StepLR(optimizer, step_size=lr_decay_iters, gamma=0.1)
+    elif lr_policy == 'plateau':
+        scheduler = lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.2, threshold=0.01, patience=5)
+    elif lr_policy == 'cosine':
+        scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=n_epochs, eta_min=0)
+    else:
+        return NotImplementedError('learning rate policy [%s] is not implemented', lr_policy)
+    return scheduler

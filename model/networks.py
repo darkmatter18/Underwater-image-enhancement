@@ -30,7 +30,6 @@ class ResnetBlock(nn.Module):
         super(ResnetBlock, self).__init__()
         self.conv_block = self.build_conv_block(dim, norm_layer, padding_type, use_dropout, use_bias)
 
-
     def build_conv_block(self, dim, norm_layer, padding_type, use_dropout, use_bias):
         """Initialize the Resnet block
 
@@ -94,7 +93,8 @@ class ResnetGenerator(nn.Module):
     We adapt Torch code and idea from Justin Johnson's neural style transfer project(https://github.com/jcjohnson/fast-neural-style)
     """
 
-    def __init__(self, input_nc, output_nc, ngf=64, norm_layer=nn.BatchNorm2d, padding_type='reflect', use_dropout=False, n_blocks=9):
+    def __init__(self, input_nc, output_nc, ngf=64, norm_layer=nn.BatchNorm2d, padding_type='reflect',
+                 use_dropout=False, n_blocks=9):
         """Construct a Resnet-based generator
 
         :param input_nc: the number of channels in input images
@@ -106,7 +106,7 @@ class ResnetGenerator(nn.Module):
         :param n_blocks: the number of ResNet blocks
         """
 
-        assert(n_blocks >= 0)
+        assert (n_blocks >= 0)
         super(ResnetGenerator, self).__init__()
 
         # use_bias is set false if BatchNorm2d is used as norm layer
@@ -133,8 +133,8 @@ class ResnetGenerator(nn.Module):
 
         # n_blocks resnet layers
         for i in range(n_blocks):
-
-            model += [ResnetBlock(ngf * mult, norm_layer=norm_layer, padding_type=padding_type, use_dropout=use_dropout, use_bias=use_bias)]
+            model += [ResnetBlock(ngf * mult, norm_layer=norm_layer, padding_type=padding_type, use_dropout=use_dropout,
+                                  use_bias=use_bias)]
 
         # Add up sampling Layers
         for i in range(n_down_sampling):
@@ -205,7 +205,8 @@ class NLayerDiscriminator(nn.Module):
         ]
 
         # Last conv layer
-        sequence += [nn.Conv2d(ndf * nf_mult, 1, kernel_size=kw, stride=1, padding=padw)]  # output 1 channel prediction map
+        sequence += [
+            nn.Conv2d(ndf * nf_mult, 1, kernel_size=kw, stride=1, padding=padw)]  # output 1 channel prediction map
         self.model = nn.Sequential(*sequence)
 
     def forward(self, input):
@@ -276,8 +277,31 @@ class GANLoss(nn.Module):
         return _loss
 
 
-def get_norm_layer(norm):
-    pass
+class Identity(nn.Module):
+    def forward(self, x):
+        return x
+
+
+def get_norm_layer(norm_type='instance'):
+    """Return a normalization layer
+
+    Parameters:
+        norm_type (str) -- the name of the normalization layer: batch | instance | none
+
+    For BatchNorm, we use learnable affine parameters and track running statistics (mean/stddev).
+    For InstanceNorm, we do not use learnable affine parameters. We do not track running statistics.
+    """
+    if norm_type == 'batch':
+        norm_layer = functools.partial(nn.BatchNorm2d, affine=True, track_running_stats=True)
+    elif norm_type == 'instance':
+        norm_layer = functools.partial(nn.InstanceNorm2d, affine=False, track_running_stats=False)
+    elif norm_type == 'none':
+        def norm_layer(x):
+            return Identity()
+    else:
+        raise NotImplementedError('normalization layer [%s] is not found' % norm_type)
+    return norm_layer
+
 
 def init_weights(net, init_type='normal', init_gain=0.02):
     """Initialize network weights.
@@ -335,8 +359,8 @@ def init_net(net, init_type='normal', init_gain=0.02, gpu_ids=[]):
     return net
 
 
-def build_G(input_nc=3, output_nc=3, ngf=64, norm='batch', padding_type='reflect', use_dropout=True, n_blocks=9, init_type='normal',
-            init_gain=0.02, gpu_ids=[]):
+def build_G(input_nc=3, output_nc=3, ngf=64, norm='batch', padding_type='reflect', use_dropout=True, n_blocks=9,
+            init_type='normal', init_gain=0.02, gpu_ids=[]):
     """Create a generator
 
     :param input_nc: the number of channels in input images
@@ -349,9 +373,26 @@ def build_G(input_nc=3, output_nc=3, ngf=64, norm='batch', padding_type='reflect
     :param init_type: the name of our initialization method.
     :param init_gain: scaling factor for normal, xavier and orthogonal.
     :param gpu_ids: which GPUs the network runs on: e.g., 0,1,2
-    :return:
+    :return: an initialized Generator network.
     """
-    norm
-    norm_layer = nn.BatchNorm2d
+
+    norm_layer = get_norm_layer(norm)
     net = ResnetGenerator(input_nc, output_nc, ngf, norm_layer, padding_type, use_dropout, n_blocks)
+    return init_net(net, init_type, init_gain, gpu_ids)
+
+
+def build_D(input_nc=3, ndf=64, n_layers=3, norm='batch', init_type='normal', init_gain=0.02, gpu_ids=[]):
+    """Create a discriminator
+
+    :param input_nc: the number of channels in input images
+    :param ndf: the number of filters in the first conv layer
+    :param n_layers: the number of conv layers in the discriminator
+    :param norm: the name of normalization layers used in the network: batch | instance | none
+    :param init_type: the name of our initialization method.
+    :param init_gain: scaling factor for normal, xavier and orthogonal.
+    :param gpu_ids: which GPUs the network runs on: e.g., 0,1,2
+    :return: an initialized discriminator network.
+    """
+    norm_layer = get_norm_layer(norm)
+    net = NLayerDiscriminator(input_nc, ndf, n_layers, norm_layer)
     return init_net(net, init_type, init_gain, gpu_ids)

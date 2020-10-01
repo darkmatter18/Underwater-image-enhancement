@@ -70,6 +70,11 @@ class CycleGan:
         self.idt_B = None
         self.loss_idt_A = None
         self.loss_idt_B = None
+        self.loss_G_AtoB = None
+        self.loss_G_BtoA = None
+        self.cycle_loss_A = None
+        self.cycle_loss_B = None
+        self.loss_G = None
 
     def update_learning_rate(self):
         """Update learning rates for all the networks; called at the end of every epoch"""
@@ -100,7 +105,7 @@ class CycleGan:
         self.forward()
 
         # Train Generators
-        self.set_requires_grad([self.D_A, self.D_B], False) # Ds require no gradients when optimizing Gs
+        self.set_requires_grad([self.D_A, self.D_B], False)  # Ds require no gradients when optimizing Gs
         self.optimizer_G.zero_grad()
 
     def forward(self):
@@ -112,15 +117,11 @@ class CycleGan:
         self.fake_A = self.G_BtoA(self.real_B)  # G_B(B)
         self.rec_B = self.G_AtoB(self.fake_A)  # G_A(G_B(B))
 
-    def compute_identity_loss(self):
-        """Compute the Identity Loss
-
-        :return: Identity Loss
-        """
+    def backward_G(self):
         lambda_idt = self.opt.lambda_identity
         lambda_A = self.opt.lambda_A
         lambda_B = self.opt.lambda_B
-        # Identity loss
+        # Identity Loss
         if lambda_idt > 0:
             # G_A should be identity if real_B is fed: ||G_A(B) - B||
             self.idt_A = self.G_AtoB(self.real_B)
@@ -132,7 +133,22 @@ class CycleGan:
             self.loss_idt_A = 0
             self.loss_idt_B = 0
 
-        return self.loss_idt_A + self.loss_idt_B
+        # GAN loss D_A(G_AtoB(A))
+        self.loss_G_AtoB = self.criterionGAN(self.D_A(self.fake_B), True)
+
+        # GAN loss D_B(G_BtoA(B))
+        self.loss_G_BtoA = self.criterionGAN(self.D_B(self.fake_A), True)
+
+        # Forward cycle loss || G_B(G_A(A)) - A||
+        self.cycle_loss_A = self.criterionCycle(self.rec_A, self.real_A) * lambda_A
+
+        # Backward cycle loss || G_A(G_B(B)) - B||
+        self.cycle_loss_B = self.criterionCycle(self.rec_B, self.real_B) * lambda_B
+
+        # combined loss and calculate gradients
+        self.loss_G = self.loss_G_AtoB + self.loss_G_BtoA + self.cycle_loss_A + self.cycle_loss_B
+        self.loss_G += self.loss_idt_A + self.loss_idt_B
+        self.loss_G.backward()
 
     def set_requires_grad(self, nets, requires_grad=False):
         """

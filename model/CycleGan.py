@@ -96,6 +96,29 @@ class CycleGan:
         self.image_paths = x['A_paths' if AtoB else 'B_paths']
 
 
+
+    def compute_identity_loss(self):
+        """Compute the Identity Loss
+
+        :return: Identity Loss
+        """
+        lambda_idt = self.opt.lambda_identity
+        lambda_A = self.opt.lambda_A
+        lambda_B = self.opt.lambda_B
+        # Identity loss
+        if lambda_idt > 0:
+            # G_A should be identity if real_B is fed: ||G_A(B) - B||
+            self.idt_A = self.G_AtoB(self.real_B)
+            self.loss_idt_A = self.criterionIdt(self.idt_A, self.real_B) * lambda_B * lambda_idt
+            # G_B should be identity if real_A is fed: ||G_B(A) - A||
+            self.idt_B = self.G_AtoB(self.real_A)
+            self.loss_idt_B = self.criterionIdt(self.idt_B, self.real_A) * lambda_A * lambda_idt
+        else:
+            self.loss_idt_A = 0
+            self.loss_idt_B = 0
+
+        return self.loss_idt_A + self.loss_idt_B
+
     def set_requires_grad(self, nets, requires_grad=False):
         """
         Set requires_grad=False for all the networks to avoid unnecessary computations

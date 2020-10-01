@@ -10,4 +10,4 @@ def create_dataset(opt):
     dataloader = CustomDatasetDataLoader(dataset, batch_size=opt.batch_size, num_threads=opt.num_threads,
                                          serial_batches=opt.serial_batches, max_dataset_size=opt.max_dataset_size)
 
-    return dataloader
+    return dataloader.load_data()

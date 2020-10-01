@@ -17,12 +17,12 @@ class CycleGan:
 
         self.G_AtoB = build_G(input_nc=opt.input_nc, output_nc=opt.output_nc, ngf=opt.ngf, norm=opt.norm,
                               padding_type=opt.padding_type,
-                              use_dropout=not opt.no_dropout, n_blocks=opt.n_blocks, init_type=opt.init_type,
+                              use_dropout=not opt.no_dropout, n_blocks=opt.n_blocks_G, init_type=opt.init_type,
                               init_gain=opt.init_gain, gpu_ids=opt.gpu_ids)
 
         self.G_BtoA = build_G(input_nc=opt.output_nc, output_nc=opt.input_nc, ngf=opt.ngf, norm=opt.norm,
                               padding_type=opt.padding_type,
-                              use_dropout=not opt.no_dropout, n_blocks=opt.n_blocks, init_type=opt.init_type,
+                              use_dropout=not opt.no_dropout, n_blocks=opt.n_blocks_G, init_type=opt.init_type,
                               init_gain=opt.init_gain, gpu_ids=opt.gpu_ids)
 
         if self.isTrain:

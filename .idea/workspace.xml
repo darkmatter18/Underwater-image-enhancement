@@ -11,7 +11,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a5bfddc9-50ed-4bfc-94b3-c22ca7722231" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/data/dataloaders.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/dataloaders.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/CycleGan.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/CycleGan.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/options/BaseOptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/options/BaseOptions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/options/TrainOptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/options/TrainOptions.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +94,7 @@
       <workItem from="1601296562545" duration="1363000" />
       <workItem from="1601298024938" duration="3130000" />
       <workItem from="1601358566069" duration="16474000" />
-      <workItem from="1601526080472" duration="9770000" />
+      <workItem from="1601526080472" duration="11927000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit&#10;&#10;- Resnet Generator added&#10;- Discriminator added&#10;- Other project files added">
       <created>1601022450101</created>
@@ -267,7 +271,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601537252966</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="fix: OverflowError: cannot convert float infinity to integer">
+      <created>1601537556000</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1601537556000</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -310,7 +321,8 @@
     <MESSAGE value="feat: lr_scheduler added" />
     <MESSAGE value="feat: Added initial CycleGan.py" />
     <MESSAGE value="feat: train.py added" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: train.py added" />
+    <MESSAGE value="fix: OverflowError: cannot convert float infinity to integer" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: OverflowError: cannot convert float infinity to integer" />
   </component>
   <component name="WindowStateProjectService">
     <state x="249" y="0" key="#Project_Structure" timestamp="1601297875837">
@@ -357,10 +369,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="277" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1601364809244" />
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1601537261243">
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1601537579165">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1601537261243" />
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1601537579165" />
     <state x="435" y="95" key="new project wizard" timestamp="1601022045950">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

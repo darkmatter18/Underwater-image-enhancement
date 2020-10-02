@@ -1,5 +1,7 @@
+import os
 import torch
 import itertools
+import collections
 from utils.image_pool import ImagePool
 from .networks import build_D, build_G, get_scheduler, GANLoss
 
@@ -12,6 +14,7 @@ class CycleGan:
         self.opt = opt
         self.gpu_ids = opt.gpu_ids
         self.isTrain = opt.isTrain
+        self.save_dir = os.path.join(opt.checkpoints_dir, opt.name)
         self.device = torch.device('cuda:{}'.format(self.gpu_ids[0])) if self.gpu_ids else torch.device('cpu')
         self.metric = 0  # used for learning rate policy 'plateau'
 
@@ -108,9 +111,9 @@ class CycleGan:
 
         # Train Generators
         self.set_requires_grad([self.D_A, self.D_B], False)  # Ds require no gradients when optimizing Gs
-        self.optimizer_G.zero_grad()    # set G_A and G_B's gradients to zero
-        self.backward_G()               # calculate gradients for G_A and G_B
-        self.optimizer_G.step()         # update G_A and G_B's weights
+        self.optimizer_G.zero_grad()  # set G_A and G_B's gradients to zero
+        self.backward_G()  # calculate gradients for G_A and G_B
+        self.optimizer_G.step()  # update G_A and G_B's weights
 
         # Train Discriminators
         self.set_requires_grad([self.D_A, self.D_B], True)
@@ -118,7 +121,6 @@ class CycleGan:
         self.backward_D_A()
         self.backward_D_B()
         self.optimizer_D.step()
-
 
     def forward(self):
         """Run forward pass
@@ -212,3 +214,45 @@ class CycleGan:
         if self.isTrain:
             self.D_A.eval()
             self.D_B.eval()
+
+    def save_networks(self, epoch):
+        """
+        Save the models
+        :param epoch: Name of the Model
+        :type epoch str
+        """
+        self.save_network(self.G_AtoB, epoch)
+        self.save_network(self.G_BtoA, epoch)
+
+        if self.isTrain:
+            self.save_network(self.D_A, epoch)
+            self.save_network(self.D_B, epoch)
+
+    def save_network(self, net, epoch):
+        save_filename = '%s_net_%s.pt' % (epoch, str(net.__class__.__name__))
+        save_path = os.path.join(self.save_dir, save_filename)
+
+        if len(self.gpu_ids) > 0 and torch.cuda.is_available():
+            torch.save(net.module.cpu().state_dict(), save_path)
+            net.cuda(self.gpu_ids[0])
+        else:
+            torch.save(net.cpu().state_dict(), save_path)
+
+    def get_current_losses(self):
+        """Get the Current Losses
+        :return: Losses
+        :rtype: dict
+        """
+        return collections.OrderedDict({'loss_idt_A': self.loss_idt_A.item(), 'loss_idt_B': self.loss_idt_B.item(),
+                                        'loss_D_A': self.loss_D_A.item(), 'loss_D_B': self.loss_D_B.item(),
+                                        'loss_G_AtoB': self.loss_G_AtoB.item(), 'loss_G_BtoA': self.loss_G_BtoA.item(),
+                                        'cycle_loss_A': self.cycle_loss_A.item(),
+                                        'cycle_loss_B': self.cycle_loss_B.item()})
+
+    def get_current_visuals(self):
+        """Get the Current Produced Images
+        :return: Images
+        :rtype: dict
+        """
+        return collections.OrderedDict({'real_A': self.real_A, 'real_B': self.real_B, 'fake_A': self.fake_A,
+                                        'fake_B': self.fake_B, 'rec_A': self.rec_A, 'rec_B': self.rec_B})

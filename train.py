@@ -17,7 +17,6 @@ if __name__ == '__main__':
     for epoch in range(opt.epoch_count, opt.n_epochs + opt.n_epochs_decay + 1):
         epoch_start_time = time.time()
         epoch_iter = 0                  # the number of training iterations in current epoch, reset to 0 every epoch
-        model.update_learning_rate()
         for i, data in enumerate(dataset):
             model.feed_input(data)
             iter_start_time = time.time()
@@ -44,3 +43,4 @@ if __name__ == '__main__':
 
         print('End of epoch %d / %d \t Time Taken: %d sec' %
               (epoch, opt.n_epochs + opt.n_epochs_decay, time.time() - epoch_start_time))
+        model.update_learning_rate()

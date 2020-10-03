@@ -127,4 +127,5 @@ class TrainStats:
         image_pil.save(image_path)
 
         if self.isCloud:
-            self.save_file_to_cloud(self.img_dir,image_path)
+            self.save_file_to_cloud(os.path.join(self.img_dir, image_path), image_path)
+            os.remove(image_path)

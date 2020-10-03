@@ -3,6 +3,7 @@ import torch
 import itertools
 import collections
 from utils.image_pool import ImagePool
+from google.cloud import storage
 from .networks import build_D, build_G, get_scheduler, GANLoss
 
 
@@ -14,7 +15,12 @@ class CycleGan:
         self.opt = opt
         self.gpu_ids = opt.gpu_ids
         self.isTrain = opt.isTrain
-        self.save_dir = os.path.join(opt.checkpoints_dir, opt.name)
+        self.isCloud = opt.checkpoints_dir.startswith('gs://')
+        if self.isCloud:
+            self.save_dir = os.path.join("/".join(opt.checkpoints_dir.split("/")[3:]), opt.name)
+            self.bucket = self.setup_cloud_bucket(opt.checkpoints_dir)
+        else:
+            self.save_dir = os.path.join(opt.checkpoints_dir, opt.name)
         self.device = torch.device('cuda:{}'.format(self.gpu_ids[0])) if self.gpu_ids else torch.device('cpu')
         self.metric = 0  # used for learning rate policy 'plateau'
 
@@ -230,13 +236,39 @@ class CycleGan:
 
     def save_network(self, net, epoch):
         save_filename = '%s_net_%s.pt' % (epoch, str(net.__class__.__name__))
-        save_path = os.path.join(self.save_dir, save_filename)
+        if self.isCloud:
+            save_path = save_filename
+        else:
+            save_path = os.path.join(self.save_dir, save_filename)
 
         if len(self.gpu_ids) > 0 and torch.cuda.is_available():
             torch.save(net.module.cpu().state_dict(), save_path)
             net.cuda(self.gpu_ids[0])
         else:
             torch.save(net.cpu().state_dict(), save_path)
+
+        if self.isCloud:
+            self.save_file_to_cloud(os.path.join(self.save_dir, save_path), save_path)
+            os.remove(save_path)
+
+    def setup_cloud_bucket(self, dataroot):
+        """Setup Google Cloud Bucket
+
+        :type dataroot: str
+        :param dataroot: The Root of the Data-storage
+        :return: Bucket
+        """
+        bucket_name = dataroot.split("/")[2]
+        print(f"Using Bucket: {bucket_name} for storing artifacts")
+        c = storage.Client()
+        b = c.get_bucket(bucket_name)
+
+        assert b.exists(), f"Bucket {bucket_name} dos't exist. Try different one"
+
+        return b
+
+    def save_file_to_cloud(self, file_path_cloud, file_path_local):
+        self.bucket.blob(file_path_cloud).upload_from_filename(file_path_local)
 
     def get_current_losses(self):
         """Get the Current Losses

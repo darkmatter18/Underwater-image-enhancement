@@ -2,6 +2,8 @@ import os
 import random
 import numpy as np
 from PIL import Image
+from io import BytesIO
+from google.cloud import storage
 from torch.utils.data import Dataset
 import torchvision.transforms as transforms
 
@@ -18,6 +20,7 @@ class CustomDataset(Dataset):
         """
         Custom Dataset for feeding Image to the network
 
+        :type dataroot: str
         :param dataroot: Root of the Dataset
         :param phase: Folder phase for Dataset
         :param max_dataset_size: Max size of the Dataset. Default: inf
@@ -43,13 +46,24 @@ class CustomDataset(Dataset):
         self.load_size = load_size
         self.crop_size = crop_size
 
-        self.dir_A = os.path.join(self.dataroot, self.phase + 'A')  # create a path '/path/to/data/trainA'
-        self.dir_B = os.path.join(self.dataroot, self.phase + 'B')  # create a path '/path/to/data/trainB'
+        if self.dataroot.startswith('gs://'):
+            self.isCloud = True
+            # create a path '/path/to/data/trainA'
+            self.dir_A = os.path.join("/".join(self.dataroot.split("/")[3:]), self.phase + 'A')
+            # create a path '/path/to/data/trainB'
+            self.dir_B = os.path.join("/".join(self.dataroot.split("/")[3:]), self.phase + 'B')
+            self.bucket = self.setup_cloud_bucket(dataroot)
+            self.A_paths = sorted(self.make_cloud_dataset(self.dir_A, self.max_dataset_size))
+            self.B_paths = sorted(self.make_cloud_dataset(self.dir_A, self.max_dataset_size))
+        else:
+            self.isCloud = False
+            self.dir_A = os.path.join(self.dataroot, self.phase + 'A')  # create a path '/path/to/data/trainA'
+            self.dir_B = os.path.join(self.dataroot, self.phase + 'B')  # create a path '/path/to/data/trainB'
+            self.A_paths = sorted(
+                self.make_dataset(self.dir_A, self.max_dataset_size))  # load images from '/path/to/data/trainA'
+            self.B_paths = sorted(
+                self.make_dataset(self.dir_B, self.max_dataset_size))  # load images from '/path/to/data/trainB'
 
-        self.A_paths = sorted(
-            self.make_dataset(self.dir_A, self.max_dataset_size))  # load images from '/path/to/data/trainA'
-        self.B_paths = sorted(
-            self.make_dataset(self.dir_B, self.max_dataset_size))  # load images from '/path/to/data/trainB'
         self.A_size = len(self.A_paths)  # get the size of dataset A
         self.B_size = len(self.B_paths)  # get the size of dataset B
         btoA = self.direction == 'BtoA'
@@ -84,6 +98,29 @@ class CustomDataset(Dataset):
                 if self.is_image_file(fname):
                     path = os.path.join(root, fname)
                     images.append(path)
+        return images[:min(max_dataset_size, len(images))]
+
+    def setup_cloud_bucket(self, dataroot):
+        """Setup Google Cloud Bucket
+
+        :type dataroot: str
+        :param dataroot: The Root of the Data-storage
+        :return: Bucket
+        """
+        bucket_name = dataroot.split("/")[2]
+        print(f"Using Bucket: {bucket_name}")
+        c = storage.Client()
+        b = c.get_bucket(bucket_name)
+
+        assert b.exists(), f"Bucket {bucket_name} dos't exist. Try different one"
+
+        return b
+
+    def make_cloud_dataset(self, dataset_dir, max_dataset_size=float("inf")):
+        images = []
+        for b in self.bucket.list_blobs(prefix=dataset_dir):
+            if self.is_image_file(b.name):
+                images.append(b.name)
         return images[:min(max_dataset_size, len(images))]
 
     def get_transform(self, grayscale=False, convert=True):
@@ -127,9 +164,13 @@ class CustomDataset(Dataset):
             index_b = random.randint(0, self.B_size - 1)
         b_path = self.B_paths[index_b]
 
+        if self.isCloud:
+            a_img = Image.open(BytesIO(self.bucket.get_blob(a_path).download_as_string())).convert('RGB')
+            b_img = Image.open(BytesIO(self.bucket.get_blob(b_path).download_as_string())).convert('RGB')
         # Open images
-        a_img = Image.open(a_path).convert('RGB')
-        b_img = Image.open(b_path).convert('RGB')
+        else:
+            a_img = Image.open(a_path).convert('RGB')
+            b_img = Image.open(b_path).convert('RGB')
 
         # apply image transformation
         A = self.transform_A(a_img)

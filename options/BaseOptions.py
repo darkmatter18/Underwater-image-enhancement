@@ -18,6 +18,8 @@ class BaseOptions:
         :return:
         """
         # basic parameters
+        parser.add_argument('--job-dir', dest="checkpoints_dir", type=str, default='./checkpoints',
+                            help='models are saved here')
         parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')
         parser.add_argument('--name', type=str, default='experiment_name',
                             help='name of the experiment. It decides where to store samples and models')

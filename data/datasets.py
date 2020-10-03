@@ -77,7 +77,7 @@ class CustomDataset(Dataset):
 
     def make_dataset(self, dataset_dir, max_dataset_size=float("inf")):
         images = []
-        assert os.path.isdir(dataset_dir), '%s is not a valid directory' % dir
+        assert os.path.isdir(dataset_dir), '%s is not a valid directory' % dataset_dir
 
         for root, _, fnames in sorted(os.walk(dataset_dir)):
             for fname in fnames:

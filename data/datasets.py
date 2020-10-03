@@ -22,15 +22,25 @@ class CustomDataset(Dataset):
 
         :type dataroot: str
         :param dataroot: Root of the Dataset
+        :type phase: str
         :param phase: Folder phase for Dataset
+        :type max_dataset_size: float
         :param max_dataset_size: Max size of the Dataset. Default: inf
+        :type direction: str
         :param direction: direction of the dataflow ["AtoB" | "BtoA" ]. Default: "AtoB"
+        :type input_nc int
         :param input_nc: number of channels of input Image. Default: 3
+        :type output_nc int
         :param output_nc: number of channels of output Image. Default: 3
+        :type serial_batches int
         :param serial_batches: Serial Batches for input. Default: 3
+        :type preprocess: str
         :param preprocess: Type of preprocessing applied. Default: "resize_and_crop"
+        :type flip: bool
         :param flip: Is RandomHorizontalFlip is applied or not. Default: True
+        :type load_size: int
         :param load_size: Size of the image on load. Default: 286
+        :type crop_size: int
         :param crop_size: Size of the image after resize. Default: 256
         """
 
@@ -108,7 +118,7 @@ class CustomDataset(Dataset):
         :return: Bucket
         """
         bucket_name = dataroot.split("/")[2]
-        print(f"Using Bucket: {bucket_name}")
+        print(f"Using Bucket: {bucket_name} for fetching dataset")
         c = storage.Client()
         b = c.get_bucket(bucket_name)
 

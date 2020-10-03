@@ -1,5 +1,6 @@
-numpy~=1.18.5
-torchvision~=0.7.0
-pillow~=7.2.0
-setuptools~=49.6.0
+google-cloud-storage~=1.31.2
+numpy
+torchvision
+pillow
+setuptools
 torch~=1.6.0

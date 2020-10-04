@@ -34,12 +34,16 @@ class CycleGan:
                               use_dropout=not opt.no_dropout, n_blocks=opt.n_blocks_G, init_type=opt.init_type,
                               init_gain=opt.init_gain, gpu_ids=opt.gpu_ids)
 
+        self.net_names = ['G_AtoB', 'G_BtoA']
+
         if self.isTrain:
             self.D_A = build_D(input_nc=opt.output_nc, ndf=opt.ndf, n_layers=opt.n_layers_D, norm=opt.norm,
                                init_type=opt.init_type, init_gain=opt.init_gain, gpu_ids=opt.gpu_ids)
             self.D_B = build_D(input_nc=opt.input_nc, ndf=opt.ndf, n_layers=opt.n_layers_D, norm=opt.norm,
                                init_type=opt.init_type, init_gain=opt.init_gain, gpu_ids=opt.gpu_ids)
 
+            self.net_names.append('D_A')
+            self.net_names.append('D_B')
             # only works when input and output images have the same number of channels
             if opt.lambda_identity > 0.0:
                 assert (opt.input_nc == opt.output_nc)
@@ -227,15 +231,12 @@ class CycleGan:
         :param epoch: Name of the Model
         :type epoch str
         """
-        self.save_network(self.G_AtoB, epoch)
-        self.save_network(self.G_BtoA, epoch)
+        for net_name in self.net_names:
+            net = getattr(self, net_name)
+            self.save_network(net, net_name, epoch)
 
-        if self.isTrain:
-            self.save_network(self.D_A, epoch)
-            self.save_network(self.D_B, epoch)
-
-    def save_network(self, net, epoch):
-        save_filename = '%s_net_%s.pt' % (epoch, str(net.__class__.__name__))
+    def save_network(self, net, net_name, epoch):
+        save_filename = '%s_net_%s.pt' % (epoch, net_name)
         if self.isCloud:
             save_path = save_filename
         else:

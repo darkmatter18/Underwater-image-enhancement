@@ -29,6 +29,8 @@ if __name__ == '__main__':
                 t_data = iter_start_time - epoch_start_time
                 t_comp = (time.time() - iter_start_time) / opt.batch_size
                 stats.print_current_losses(epoch, epoch_iter, model.get_current_losses(), t_comp, t_data)
+
+            if total_iters % opt.display_freq == 0:
                 stats.save_current_visuals(model.get_current_visuals(), 'img-%s' % total_iters)
 
             if total_iters % opt.save_latest_freq == 0:

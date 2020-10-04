@@ -1,14 +1,16 @@
-jobId: uwie_v123
+jobId: uwie_v130
 trainingInput:
   scaleTier: CUSTOM
   masterType: n1-standard-16
   masterConfig:
     acceleratorConfig:
-      count: 1
+      count: 2
       type: NVIDIA_TESLA_P4
     imageUri: gcr.io/cloud-ml-public/training/pytorch-gpu.1-4
   args:
+    - "--name"
+    - "uwie_v130"
     - "--dataroot"
     - "gs://arkadip-uie-store/dataset/underwater_dark"
     - "--gpu_ids"
-    - "0"
+    - "0,1"

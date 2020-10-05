@@ -102,6 +102,10 @@ class BaseOptions:
             print(f'{gpus} no of GPUs detected. Using GPU: {str(device_ids)}')
             torch.cuda.set_device(device_ids[0])
             if distributed.is_available():
+                print(f"MASTER_ADDR is: {os.environ['MASTER_ADDR']}")
+                print(f"MASTER_PORT is: {os.environ['MASTER_PORT']}")
+                print(f"RANK is:{os.environ['RANK']}")
+                print(f"World Size is: {os.environ['WORLD_SIZE']}")
                 torch.distributed.init_process_group('nccl', init_method="env://")
                 print("Running on Distributed mode")
             else:

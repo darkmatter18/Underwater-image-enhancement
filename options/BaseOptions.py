@@ -2,6 +2,7 @@ import os
 import torch
 import argparse
 from utils import mkdirs
+from torch import distributed
 
 
 class BaseOptions:
@@ -25,7 +26,7 @@ class BaseOptions:
                             help='name of the experiment. It decides where to store samples and models')
         parser.add_argument('--dataroot', required=True, type=str,
                             help="path to images (should have sub folders trainA, trainB, valA, valB, etc)")
-        parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
+        # parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
 
         # model parameters
         parser.add_argument('--input_nc', default=3, type=int,
@@ -95,13 +96,28 @@ class BaseOptions:
         self.print_options(opt)
 
         # set gpu ids
-        str_ids = opt.gpu_ids.split(',')
-        opt.gpu_ids = []
-        for str_id in str_ids:
-            id = int(str_id)
-            if id >= 0:
-                opt.gpu_ids.append(id)
-        if len(opt.gpu_ids) > 0:
-            torch.cuda.set_device(opt.gpu_ids[0])
+        if torch.cuda.is_available():
+            device_ids = list(range(torch.cuda.device_count()))
+            gpus = len(device_ids)
+            print(f'{gpus} no of GPUs detected. Using GPU: {str(device_ids)}')
+            torch.cuda.set_device(device_ids[0])
+            if distributed.is_available():
+                torch.distributed.init_process_group('nccl', init_method="env://")
+                print("Running on Distributed mode")
+            else:
+                print("Distributed mode is not supported")
+        else:
+            device_ids = -1
+            print('No GPU. switching to CPU')
+        torch.autograd.set_detect_anomaly(True)
+        opt.gpu_ids = device_ids
+        # str_ids = opt.gpu_ids.split(',')
+        # opt.gpu_ids = []
+        # for str_id in str_ids:
+        #     id = int(str_id)
+        #     if id >= 0:
+        #         opt.gpu_ids.append(id)
+        # if len(opt.gpu_ids) > 0:
+        #     torch.cuda.set_device(opt.gpu_ids[0])
 
         return opt

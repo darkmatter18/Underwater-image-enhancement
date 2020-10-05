@@ -2,6 +2,7 @@ import torch
 import functools
 from torch import nn
 from torch.nn import init
+from torch.nn.parallel import DistributedDataParallel
 from torch.optim import lr_scheduler
 
 
@@ -352,11 +353,11 @@ def init_net(net, init_type='normal', init_gain=0.02, gpu_ids=[]):
     :return: an initialized network.
     """
 
+    init_weights(net, init_type, init_gain=init_gain)
     if len(gpu_ids) > 0:
         assert (torch.cuda.is_available())
-        net.to(gpu_ids[0])
-        net = torch.nn.DataParallel(net, gpu_ids)  # multi-GPUs
-    init_weights(net, init_type, init_gain=init_gain)
+        # net.to(gpu_ids[0])
+        net = DistributedDataParallel(net)  # multi-GPUs
     return net
 
 

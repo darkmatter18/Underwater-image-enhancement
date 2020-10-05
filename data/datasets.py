@@ -64,7 +64,7 @@ class CustomDataset(Dataset):
             self.dir_B = os.path.join("/".join(self.dataroot.split("/")[3:]), self.phase + 'B')
             self.bucket = self.setup_cloud_bucket(dataroot)
             self.A_paths = sorted(self.make_cloud_dataset(self.dir_A, self.max_dataset_size))
-            self.B_paths = sorted(self.make_cloud_dataset(self.dir_A, self.max_dataset_size))
+            self.B_paths = sorted(self.make_cloud_dataset(self.dir_B, self.max_dataset_size))
         else:
             self.isCloud = False
             self.dir_A = os.path.join(self.dataroot, self.phase + 'A')  # create a path '/path/to/data/trainA'

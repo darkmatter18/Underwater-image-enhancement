@@ -1,4 +1,4 @@
-jobId: uwie_v150
+jobId: uwie_v160
 trainingInput:
   scaleTier: CUSTOM
   masterType: n1-standard-8
@@ -9,8 +9,10 @@ trainingInput:
     imageUri: gcr.io/cloud-ml-public/training/pytorch-gpu.1-4
   args:
     - "--name"
-    - "uwie_v150"
+    - "uwie_v160"
     - "--dataroot"
     - "gs://arkadip-uie-store/dataset/underwater_dark"
     - "--batch_size"
     - "2"
+    - "--num_threads"
+    - "4"

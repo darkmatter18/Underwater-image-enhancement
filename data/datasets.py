@@ -1,8 +1,8 @@
 import os
+import utils
 import random
 import numpy as np
 from PIL import Image
-from io import BytesIO
 from google.cloud import storage
 from torch.utils.data import Dataset
 import torchvision.transforms as transforms
@@ -121,16 +121,18 @@ class CustomDataset(Dataset):
         print(f"Using Bucket: {bucket_name} for fetching dataset")
         c = storage.Client()
         b = c.get_bucket(bucket_name)
-
         assert b.exists(), f"Bucket {bucket_name} dos't exist. Try different one"
-
         return b
 
     def make_cloud_dataset(self, dataset_dir, max_dataset_size=float("inf")):
+        utils.mkdir(dataset_dir)
+        print(f'Loading Images into \"{dataset_dir}\"')
         images = []
         for b in self.bucket.list_blobs(prefix=dataset_dir):
             if self.is_image_file(b.name):
                 images.append(b.name)
+                self.bucket.blob(b.name).download_as_string(b.name)
+        print(f'Done loading {len(images)} Images for \"{dataset_dir}\"')
         return images[:min(max_dataset_size, len(images))]
 
     def get_transform(self, grayscale=False, convert=True):
@@ -174,13 +176,8 @@ class CustomDataset(Dataset):
             index_b = random.randint(0, self.B_size - 1)
         b_path = self.B_paths[index_b]
 
-        if self.isCloud:
-            a_img = Image.open(BytesIO(self.bucket.get_blob(a_path).download_as_string())).convert('RGB')
-            b_img = Image.open(BytesIO(self.bucket.get_blob(b_path).download_as_string())).convert('RGB')
-        # Open images
-        else:
-            a_img = Image.open(a_path).convert('RGB')
-            b_img = Image.open(b_path).convert('RGB')
+        a_img = Image.open(a_path).convert('RGB')
+        b_img = Image.open(b_path).convert('RGB')
 
         # apply image transformation
         A = self.transform_A(a_img)
@@ -195,5 +192,4 @@ class CustomDataset(Dataset):
 
         :return: the total number of images in the dataset.
         """
-
         return max(self.A_size, self.B_size)

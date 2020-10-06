@@ -26,6 +26,10 @@ class TrainStats:
             now = time.strftime("%c")
             log_file.write('================ Training Loss (%s) ================\n' % now)
 
+        # Save log to Cloud, if needed
+        if self.isCloud:
+            self.save_file_to_cloud(self.cloud_log_name, self.log_name)
+
     def setup_cloud_bucket(self, dataroot):
         """Setup Google Cloud Bucket
 
@@ -44,10 +48,6 @@ class TrainStats:
 
     def save_file_to_cloud(self, file_path_cloud, file_path_local):
         self.bucket.blob(file_path_cloud).upload_from_filename(file_path_local)
-
-    def save_loss_to_cloud(self,):
-        if self.isCloud:
-            self.save_file_to_cloud(self.cloud_log_name, self.log_name)
 
     def print_current_losses(self, epoch, iters, losses, t_comp, t_data):
         """print current losses on console; also save the losses to the disk
@@ -70,6 +70,10 @@ class TrainStats:
         print(message)  # print the message
         with open(self.log_name, "a") as log_file:
             log_file.write('%s\n' % message)
+
+        # Save log to Cloud, if needed
+        if self.isCloud:
+            self.save_file_to_cloud(self.cloud_log_name, self.log_name)
 
     def save_current_visuals(self, images, prefix):
         """Save Current Produced images

@@ -131,7 +131,7 @@ class CustomDataset(Dataset):
         for b in self.bucket.list_blobs(prefix=dataset_dir):
             if self.is_image_file(b.name):
                 images.append(b.name)
-                self.bucket.blob(b.name).download_as_string(b.name)
+                self.bucket.blob(b.name).download_to_filename(b.name)
         print(f'Done loading {len(images)} Images for \"{dataset_dir}\"')
         return images[:min(max_dataset_size, len(images))]
 

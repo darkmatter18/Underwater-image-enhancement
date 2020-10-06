@@ -226,14 +226,42 @@ class CycleGan:
             self.D_B.eval()
 
     def save_networks(self, epoch):
-        """
-        Save the models
-        :param epoch: Name of the Model
-        :type epoch str
+        """Save models
+
+        :type epoch: str
+        :param epoch: Current Epoch (prefix for the name)
         """
         for net_name in self.net_names:
             net = getattr(self, net_name)
             self.save_network(net, net_name, epoch)
+
+    def save_optimizers(self, epoch):
+        """Save optimizers
+
+        :type epoch: str
+        :param epoch: Current Epoch (prefix for the name)
+        """
+        self.save_optimizer(self.optimizer_G, f"{epoch}_optim_G.pt")
+        self.save_optimizer(self.optimizer_D, f"{epoch}_optim_D.pt")
+
+    def save_optimizer(self, optimizer, optimizer_name):
+        """Save a single optimizer
+
+        :param optimizer: The optimizer object
+        :type optimizer_name: str
+        :param optimizer_name: Name of the optimizer
+        :return:
+        """
+        if self.isCloud:
+            save_path = optimizer_name
+        else:
+            save_path = os.path.join(self.save_dir, optimizer_name)
+
+        torch.save(optimizer.state_dict(), save_path)
+
+        if self.isCloud:
+            self.save_file_to_cloud(os.path.join(self.save_dir, save_path), save_path)
+            os.remove(save_path)
 
     def save_network(self, net, net_name, epoch):
         save_filename = '%s_net_%s.pt' % (epoch, net_name)

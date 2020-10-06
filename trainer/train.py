@@ -31,17 +31,21 @@ if __name__ == '__main__':
                 stats.print_current_losses(epoch, epoch_iter, model.get_current_losses(), t_comp, t_data)
 
             if total_iters % opt.display_freq == 0:
+                print(f"Saving Visuals (epoch: {epoch}, total_iters: {total_iters})")
                 stats.save_current_visuals(model.get_current_visuals(), 'img-%s' % total_iters)
 
             if total_iters % opt.save_latest_freq == 0:
                 print('saving the latest model (epoch %d, total_iters %d)' % (epoch, total_iters))
                 save_suffix = 'iter_%d' % total_iters if opt.save_by_iter else 'latest'
                 model.save_networks(save_suffix)
+                model.save_optimizers(save_suffix)
 
         if epoch % opt.save_epoch_freq == 0:
             print('saving the model at the end of epoch %d, iters %d' % (epoch, total_iters))
             model.save_networks('latest')
+            model.save_optimizers('latest')
             model.save_networks(str(epoch))
+            model.save_optimizers(str(epoch))
 
         print('End of epoch %d / %d \t Time Taken: %d sec' %
               (epoch, opt.n_epochs + opt.n_epochs_decay, time.time() - epoch_start_time))

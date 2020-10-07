@@ -235,29 +235,34 @@ class CycleGan:
             net = getattr(self, net_name)
             self.save_network(net, net_name, epoch)
 
-    def save_optimizers(self, epoch):
+    def save_optimizers_and_scheduler(self, epoch):
         """Save optimizers
 
         :type epoch: str
         :param epoch: Current Epoch (prefix for the name)
         """
-        self.save_optimizer(self.optimizer_G, f"{epoch}_optim_G.pt")
-        self.save_optimizer(self.optimizer_D, f"{epoch}_optim_D.pt")
+        # Saving Optimizers
+        self.save_optimizer_scheduler(self.optimizer_G, f"{epoch}_optim_G.pt")
+        self.save_optimizer_scheduler(self.optimizer_D, f"{epoch}_optim_D.pt")
 
-    def save_optimizer(self, optimizer, optimizer_name):
+        # Saving Schedulers
+        self.save_optimizer_scheduler(self.schedulers[0], f"{epoch}_scheduler_0.pt")
+        self.save_optimizer_scheduler(self.schedulers[1], f"{epoch}_scheduler_1.pt")
+
+    def save_optimizer_scheduler(self, optim_or_scheduler, name):
         """Save a single optimizer
 
-        :param optimizer: The optimizer object
-        :type optimizer_name: str
-        :param optimizer_name: Name of the optimizer
+        :param optim_or_scheduler: The optimizer object
+        :type name: str
+        :param name: Name of the optimizer
         :return:
         """
         if self.isCloud:
-            save_path = optimizer_name
+            save_path = name
         else:
-            save_path = os.path.join(self.save_dir, optimizer_name)
+            save_path = os.path.join(self.save_dir, name)
 
-        torch.save(optimizer.state_dict(), save_path)
+        torch.save(optim_or_scheduler.state_dict(), save_path)
 
         if self.isCloud:
             self.save_file_to_cloud(os.path.join(self.save_dir, save_path), save_path)

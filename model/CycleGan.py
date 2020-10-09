@@ -319,7 +319,16 @@ class CycleGan:
         :return: Losses
         :rtype: dict
         """
-        return collections.OrderedDict({'loss_idt_A': self.loss_idt_A.item(), 'loss_idt_B': self.loss_idt_B.item(),
+        if isinstance(self.loss_idt_A, (int, float)):
+            idt_loss_A = self.loss_idt_A
+        else:
+            idt_loss_A = self.loss_idt_A.item()
+
+        if isinstance(self.loss_idt_B, (int, float)):
+            idt_loss_B = self.loss_idt_B
+        else:
+            idt_loss_B = self.loss_idt_B.item()
+        return collections.OrderedDict({'loss_idt_A': idt_loss_A, 'loss_idt_B': idt_loss_B,
                                         'loss_D_A': self.loss_D_A.item(), 'loss_D_B': self.loss_D_B.item(),
                                         'loss_G_AtoB': self.loss_G_AtoB.item(), 'loss_G_BtoA': self.loss_G_BtoA.item(),
                                         'cycle_loss_A': self.cycle_loss_A.item(),

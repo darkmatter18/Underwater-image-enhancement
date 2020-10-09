@@ -147,10 +147,10 @@ class CycleGan:
         lambda_B = self.opt.lambda_B
         # Identity Loss
         if lambda_idt > 0:
-            # G_A should be identity if real_B is fed: ||G_A(B) - B||
+            # G_A should be identity if real_B is fed: ||G_AtoB(B) - B||
             self.idt_A = self.G_AtoB(self.real_B)
             self.loss_idt_A = self.criterionIdt(self.idt_A, self.real_B) * lambda_B * lambda_idt
-            # G_B should be identity if real_A is fed: ||G_B(A) - A||
+            # G_B should be identity if real_A is fed: ||G_BtoA(A) - A||
             self.idt_B = self.G_AtoB(self.real_A)
             self.loss_idt_B = self.criterionIdt(self.idt_B, self.real_A) * lambda_A * lambda_idt
         else:
@@ -207,6 +207,7 @@ class CycleGan:
         """
         Set requires_grad=False for all the networks to avoid unnecessary computations
         :param nets: a list of networks
+        :type requires_grad: bool
         :param requires_grad: whether the networks require gradients or not
         """
         if not isinstance(nets, list):
@@ -215,6 +216,15 @@ class CycleGan:
             if net is not None:
                 for param in net.parameters():
                     param.requires_grad = requires_grad
+
+    def train(self):
+        """Make models train mode during test time"""
+        self.G_AtoB.train()
+        self.G_BtoA.train()
+
+        if self.isTrain:
+            self.D_A.train()
+            self.D_B.train()
 
     def eval(self):
         """Make models eval mode during test time"""
@@ -255,7 +265,6 @@ class CycleGan:
         :param optim_or_scheduler: The optimizer object
         :type name: str
         :param name: Name of the optimizer
-        :return:
         """
         if self.isCloud:
             save_path = name
@@ -306,6 +315,7 @@ class CycleGan:
 
     def get_current_losses(self):
         """Get the Current Losses
+
         :return: Losses
         :rtype: dict
         """
@@ -317,6 +327,7 @@ class CycleGan:
 
     def get_current_visuals(self):
         """Get the Current Produced Images
+
         :return: Images
         :rtype: dict
         """

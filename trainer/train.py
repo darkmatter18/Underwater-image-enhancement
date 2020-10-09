@@ -18,13 +18,14 @@ if __name__ == '__main__':
         epoch_start_time = time.time()
         epoch_iter = 0                  # the number of training iterations in current epoch, reset to 0 every epoch
         for i, data in enumerate(dataset):
+            model.train()
             model.feed_input(data)
             iter_start_time = time.time()
             model.optimize_parameters()
 
             total_iters += 1
             epoch_iter += 1
-
+            model.eval()
             if total_iters % opt.print_freq == 0:
                 t_data = iter_start_time - epoch_start_time
                 t_comp = (time.time() - iter_start_time) / opt.batch_size

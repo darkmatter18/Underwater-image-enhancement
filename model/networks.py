@@ -264,6 +264,7 @@ class GANLoss(nn.Module):
         """Calculate loss given Discriminator's output and grunt truth labels.
 
         :param prediction: typically the prediction output from a discriminator
+        :type target_is_real: bool
         :param target_is_real: if the ground truth label is for real images or fake images
         :return: the calculated loss.
         """

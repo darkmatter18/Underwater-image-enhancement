@@ -405,5 +405,14 @@ class CycleGan:
         :return: Images
         :rtype: dict
         """
-        return collections.OrderedDict({'real_A': self.real_A, 'real_B': self.real_B, 'fake_A': self.fake_A,
-                                        'fake_B': self.fake_B, 'rec_A': self.rec_A, 'rec_B': self.rec_B})
+        r = collections.OrderedDict({'real_A': self.real_A, 'real_B': self.real_B})
+
+        if self.fake_A:
+            r['fake_A'] = self.fake_A
+        if self.fake_B:
+            r['fake_B'] = self.fake_B
+        if self.rec_A:
+            r['rec_A'] = self.rec_A
+        if self.rec_B:
+            r['rec_B'] = self.rec_B
+        return r

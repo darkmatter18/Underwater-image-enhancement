@@ -106,7 +106,10 @@ class CycleGan:
     def feed_input(self, x):
         """Unpack input data from the dataloader and perform necessary pre-processing steps.
 
+        :type x: dict
         :param x: include the data itself and its metadata information.
+        x should have the structure {'A': Tensor Images, 'B': Tensor Images,
+        'A_paths': paths of the A Images, 'B_paths': paths of the B Images}
 
         The option 'direction' can be used to swap domain A and domain B.
         """
@@ -234,6 +237,16 @@ class CycleGan:
         if self.isTrain:
             self.D_A.eval()
             self.D_B.eval()
+
+    def compute_visuals(self, bidirectional=False):
+        """ Computes the Visual output data from the model
+        :type bidirectional: bool
+        :param bidirectional:
+        :return:
+        """
+        self.fake_B = self.G_AtoB(self.real_A)
+        if bidirectional:
+            self.fake_A = self.G_BtoA(self.real_B)
 
     def load_objects(self, file_names, object_names):
         """Load objects from file

@@ -1,4 +1,5 @@
 import os
+import time
 import torch
 import argparse
 from utils import mkdirs
@@ -113,15 +114,8 @@ class BaseOptions:
         else:
             device_ids = -1
             print('No GPU. switching to CPU')
-        torch.autograd.set_detect_anomaly(True)
         opt.gpu_ids = device_ids
-        # str_ids = opt.gpu_ids.split(',')
-        # opt.gpu_ids = []
-        # for str_id in str_ids:
-        #     id = int(str_id)
-        #     if id >= 0:
-        #         opt.gpu_ids.append(id)
-        # if len(opt.gpu_ids) > 0:
-        #     torch.cuda.set_device(opt.gpu_ids[0])
+        if self.isTrain:
+            opt.name = opt.name + str(time.time())
 
         return opt

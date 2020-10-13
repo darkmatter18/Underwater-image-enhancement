@@ -91,6 +91,10 @@ class CycleGan:
         self.loss_D_A = None
         self.loss_D_B = None
 
+        # Printing the Networks
+        for net_name in self.net_names:
+            print(net_name, "\n", getattr(self, net_name))
+
     def update_learning_rate(self):
         """Update learning rates for all the networks; called at the end of every epoch"""
         old_lr = self.optimizers[0].param_groups[0]['lr']

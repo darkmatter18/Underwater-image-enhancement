@@ -235,6 +235,58 @@ class CycleGan:
             self.D_A.eval()
             self.D_B.eval()
 
+    def load_objects(self, file_names, object_names):
+        """Load objects from file
+
+        :type file_names: list
+        :param file_names: Name of the Files to load
+        :type object_names: list
+        :param object_names: Name of the object, where the files is going to be stored.
+
+        file_names and object_names should be in same order
+        """
+        for file_name, object_name in zip(file_names, object_names):
+            model_name = os.path.join(self.save_dir, file_name)
+            net = getattr(self, object_name)
+            net.load_state_dict(torch.load(model_name))
+
+    def load_networks(self, initials, load_D=False):
+        """ Loading Models
+        Loads from /checkpoint_dir/name/{initials}_net_G_AtoB.pt
+        :type initials: str
+        :param initials: The initials of the model
+        :type load_D: bool
+        :param load_D: Is loading D or not
+        """
+        file_names = [os.path.join(self.save_dir, f"{initials}_net_G_AtoB.pt"),
+                      os.path.join(self.save_dir, f"{initials}_net_G_BtoA.pt")]
+        if load_D:
+            file_names.append(os.path.join(self.save_dir, f"{initials}_net_D_A.pt"))
+            file_names.append(os.path.join(self.save_dir, f"{initials}_net_D_B.pt"))
+
+        object_names = ['G_AtoB', 'G_BtoA'] if not load_D else ['G_AtoB', 'G_BtoA', 'D_A', 'D_B']
+
+        self.load_objects(file_names, object_names)
+
+    def load_lr_schedulers(self, initials):
+        self.schedulers[0].load_state_dict(torch.load(os.path.join(self.save_dir, f"{initials}_scheduler_0.pt")))
+        self.schedulers[1].load_state_dict(torch.load(os.path.join(self.save_dir, f"{initials}_scheduler_1.pt")))
+
+    def load_train_model(self, initials):
+        """ Loading Models for training purpose
+
+        :type initials: str
+        :param initials: Initials of the object names
+        """
+        self.load_networks(initials, load_D=True)
+
+        file_names = [os.path.join(self.save_dir, f"{initials}_optim_G.pt"),
+                      os.path.join(self.save_dir, f"{initials}_optim_D.pt")]
+        object_names = ['optimizer_G', 'optimizer_D']
+        self.load_objects(file_names, object_names)
+
+        self.load_lr_schedulers(initials)
+
     def save_networks(self, epoch):
         """Save models
 

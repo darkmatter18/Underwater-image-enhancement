@@ -245,8 +245,7 @@ class CycleGan:
     def compute_visuals(self, bidirectional=False):
         """ Computes the Visual output data from the model
         :type bidirectional: bool
-        :param bidirectional:
-        :return:
+        :param bidirectional: if true, Calculate both AtoB and BtoA, else calculate AtoB
         """
         self.fake_B = self.G_AtoB(self.real_A)
         if bidirectional:
@@ -264,8 +263,9 @@ class CycleGan:
         """
         for file_name, object_name in zip(file_names, object_names):
             model_name = os.path.join(self.save_dir, file_name)
+            print(f"Loading {object_name} from {model_name}")
             net = getattr(self, object_name)
-            net.load_state_dict(torch.load(model_name))
+            net.load_state_dict(torch.load(model_name, map_location=self.device))
 
     def load_networks(self, initials, load_D=False):
         """ Loading Models
@@ -275,11 +275,10 @@ class CycleGan:
         :type load_D: bool
         :param load_D: Is loading D or not
         """
-        file_names = [os.path.join(self.save_dir, f"{initials}_net_G_AtoB.pt"),
-                      os.path.join(self.save_dir, f"{initials}_net_G_BtoA.pt")]
+        file_names = [f"{initials}_net_G_AtoB.pt", f"{initials}_net_G_BtoA.pt"]
         if load_D:
-            file_names.append(os.path.join(self.save_dir, f"{initials}_net_D_A.pt"))
-            file_names.append(os.path.join(self.save_dir, f"{initials}_net_D_B.pt"))
+            file_names.append(f"{initials}_net_D_A.pt")
+            file_names.append(f"{initials}_net_D_B.pt")
 
         object_names = ['G_AtoB', 'G_BtoA'] if not load_D else ['G_AtoB', 'G_BtoA', 'D_A', 'D_B']
 
@@ -402,6 +401,12 @@ class CycleGan:
                                         'loss_G_AtoB': self.loss_G_AtoB.item(), 'loss_G_BtoA': self.loss_G_BtoA.item(),
                                         'cycle_loss_A': self.cycle_loss_A.item(),
                                         'cycle_loss_B': self.cycle_loss_B.item()})
+
+    def get_current_image_path(self):
+        """
+        :return: The current image path
+        """
+        return self.image_paths
 
     def get_current_visuals(self):
         """Get the Current Produced Images

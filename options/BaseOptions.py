@@ -23,11 +23,11 @@ class BaseOptions:
         parser.add_argument('--job-dir', dest="checkpoints_dir", type=str, default='./checkpoints',
                             help='models are saved here')
         parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')
-        parser.add_argument('--name', type=str, default='experiment_name',
+        parser.add_argument('--name', type=str, default='uwie',
                             help='name of the experiment. It decides where to store samples and models')
         parser.add_argument('--dataroot', required=True, type=str,
                             help="path to images (should have sub folders trainA, trainB, valA, valB, etc)")
-        # parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
+        parser.add_argument('--no_gpu', action='store_true', help='Use only CPU')
 
         # model parameters
         parser.add_argument('--input_nc', default=3, type=int,
@@ -97,7 +97,7 @@ class BaseOptions:
         self.print_options(opt)
 
         # set gpu ids
-        if torch.cuda.is_available():
+        if not opt.no_gpu and torch.cuda.is_available():
             device_ids = list(range(torch.cuda.device_count()))
             gpus = len(device_ids)
             print(f'{gpus} no of GPUs detected. Using GPU: {str(device_ids)}')
@@ -112,7 +112,7 @@ class BaseOptions:
             else:
                 print("Distributed mode is not supported")
         else:
-            device_ids = -1
+            device_ids = []
             print('No GPU. switching to CPU')
         opt.gpu_ids = device_ids
         if self.isTrain:

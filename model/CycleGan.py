@@ -411,7 +411,7 @@ class CycleGan:
     def get_current_visuals(self):
         """Get the Current Produced Images
 
-        :return: Images
+        :return: Images {real_A, real_B, fake_A, fake_B, rec_A, rec_B}
         :rtype: dict
         """
         r = collections.OrderedDict({'real_A': self.real_A, 'real_B': self.real_B})

@@ -1,8 +1,7 @@
 import os
 import time
-import torch
 import pickle
-import numpy as np
+from . import tensor2im
 from PIL import Image
 from google.cloud import storage
 
@@ -49,9 +48,7 @@ class TrainStats:
         print(f"Using Bucket: {bucket_name} for storing artifacts")
         c = storage.Client()
         b = c.get_bucket(bucket_name)
-
         assert b.exists(), f"Bucket {bucket_name} dos't exist. Try different one"
-
         return b
 
     def save_file_to_cloud(self, file_path_cloud, file_path_local):
@@ -98,30 +95,8 @@ class TrainStats:
         """
         for label, image in images.items():
             imageName = '%s-%s.jpg' % (prefix, label)
-            img = self.tensor2im(image)
+            img = tensor2im(image)
             self.save_image(img, imageName)
-
-    def tensor2im(self, input_image, imtype=np.uint8):
-        """Converts a Tensor array into a numpy image array.
-
-        :param input_image: the input image tensor array
-        :param imtype: the desired type of the converted numpy array
-        :return: Converted Image
-        """
-        if not isinstance(input_image, np.ndarray):
-            if isinstance(input_image, torch.Tensor):  # get the data from a variable
-                image_tensor = input_image.data
-            else:
-                return input_image
-            image_numpy = image_tensor[0].cpu().float().numpy()  # convert it into a numpy array
-            if image_numpy.shape[0] == 1:  # grayscale to RGB
-                image_numpy = np.tile(image_numpy, (3, 1, 1))
-
-            # post-processing: transpose and scaling
-            image_numpy = (np.transpose(image_numpy, (1, 2, 0)) + 1) / 2.0 * 255.0
-        else:  # if it is a numpy array, do nothing
-            image_numpy = input_image
-        return image_numpy.astype(imtype)
 
     def save_image(self, image_numpy, image_name, aspect_ratio=1.0):
         """Save a numpy image to the disk

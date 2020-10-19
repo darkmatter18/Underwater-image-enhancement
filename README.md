@@ -1,6 +1,11 @@
 # Underwater Image Enhancement
 
-## Matric
+## Running Test
+```bash
+python -m trainer.test --dataroot "../Dataset/EUVP Dataset/Paired/underwater_dark" --no_gpu --load_model 136
+```
+
+## Metric
 
 - PSNR
 - SSIM

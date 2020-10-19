@@ -146,7 +146,7 @@ class CustomDataset(Dataset):
         if 'crop' in self.preprocess:
             transform_list.append(transforms.RandomCrop(self.crop_size))
 
-        if not self.flip:
+        if self.flip:
             transform_list.append(transforms.RandomHorizontalFlip())
 
         if convert:

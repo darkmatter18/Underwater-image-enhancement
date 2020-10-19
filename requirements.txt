@@ -5,3 +5,4 @@ pillow
 setuptools
 torch~=1.6.0
 matplotlib
+scikit-image

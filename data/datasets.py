@@ -15,32 +15,22 @@ class CustomDataset(Dataset):
         '.tif', '.TIF', '.tiff', '.TIFF',
     ]
 
-    def __init__(self, dataroot, phase, max_dataset_size=float("inf"), direction="AtoB", input_nc=3, output_nc=3,
-                 serial_batches=True, preprocess='resize_and_crop', flip=True, load_size=286, crop_size=256):
+    def __init__(self, dataroot: str, phase: str, max_dataset_size: float = float("inf"), direction: str = "AtoB",
+                 input_nc: int = 3, output_nc: int = 3, serial_batches: bool = True,
+                 preprocess: str = 'resize_and_crop', flip: bool = True, load_size: int = 286, crop_size: int = 256):
         """
         Custom Dataset for feeding Image to the network
 
-        :type dataroot: str
         :param dataroot: Root of the Dataset
-        :type phase: str
         :param phase: Folder phase for Dataset
-        :type max_dataset_size: float
         :param max_dataset_size: Max size of the Dataset. Default: inf
-        :type direction: str
         :param direction: direction of the dataflow ["AtoB" | "BtoA" ]. Default: "AtoB"
-        :type input_nc int
         :param input_nc: number of channels of input Image. Default: 3
-        :type output_nc int
         :param output_nc: number of channels of output Image. Default: 3
-        :type serial_batches int
         :param serial_batches: Serial Batches for input. Default: 3
-        :type preprocess: str
         :param preprocess: Type of preprocessing applied. Default: "resize_and_crop"
-        :type flip: bool
         :param flip: Is RandomHorizontalFlip is applied or not. Default: True
-        :type load_size: int
         :param load_size: Size of the image on load. Default: 286
-        :type crop_size: int
         :param crop_size: Size of the image after resize. Default: 256
         """
 
@@ -110,10 +100,9 @@ class CustomDataset(Dataset):
                     images.append(path)
         return images[:min(max_dataset_size, len(images))]
 
-    def setup_cloud_bucket(self, dataroot):
+    def setup_cloud_bucket(self, dataroot: str):
         """Setup Google Cloud Bucket
 
-        :type dataroot: str
         :param dataroot: The Root of the Data-storage
         :return: Bucket
         """
@@ -124,7 +113,14 @@ class CustomDataset(Dataset):
         assert b.exists(), f"Bucket {bucket_name} dos't exist. Try different one"
         return b
 
-    def make_cloud_dataset(self, dataset_dir, max_dataset_size=float("inf")):
+    def make_cloud_dataset(self, dataset_dir: str, max_dataset_size: float = float("inf")):
+        """Make dataset from Google Cloud Storage
+        Save all the images from GCS and returns file paths in a list
+
+        :param dataset_dir: Cloud Storage Dir (gs://bucket_name/dataset/dir)
+        :param max_dataset_size: Maximum size allowed for dataset
+        :return: List of file paths of the dataset
+        """
         utils.mkdir(dataset_dir)
         print(f'Loading Images into \"{dataset_dir}\"')
         images = []

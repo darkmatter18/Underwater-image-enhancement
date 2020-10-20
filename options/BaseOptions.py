@@ -2,7 +2,7 @@ import os
 import time
 import torch
 import argparse
-from utils import mkdirs, setup_cloud_bucket
+from utils import mkdirs
 from torch import distributed
 
 
@@ -90,10 +90,6 @@ class BaseOptions:
         with open(file_name, 'wt') as opt_file:
             opt_file.write(message)
             opt_file.write('\n')
-
-        if opt.isCloud:
-            b = setup_cloud_bucket(opt.dataroot)
-            # TODO
 
     def parse(self):
         opt = self.parser.parse_args()

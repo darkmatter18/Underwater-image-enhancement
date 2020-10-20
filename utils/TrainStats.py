@@ -3,7 +3,7 @@ import time
 import pickle
 from . import tensor2im
 from PIL import Image
-from google.cloud import storage
+from . import setup_cloud_bucket
 
 
 class TrainStats:
@@ -13,7 +13,7 @@ class TrainStats:
         self.isCloud = opt.checkpoints_dir.startswith('gs://')
         if self.isCloud:
             # G-Cloud
-            self.bucket = self.setup_cloud_bucket(opt.checkpoints_dir)
+            self.bucket = setup_cloud_bucket(opt.checkpoints_dir)
             self.log_name = 'loss_log.txt'
             self.loss_name = 'loss_stats.pkl'
             self.cloud_log_name = os.path.join("/".join(opt.checkpoints_dir.split("/")[3:]), opt.name, 'loss_log.txt')
@@ -36,20 +36,6 @@ class TrainStats:
         # Save log to Cloud, if needed
         if self.isCloud:
             self.save_file_to_cloud(self.cloud_log_name, self.log_name)
-
-    def setup_cloud_bucket(self, dataroot):
-        """Setup Google Cloud Bucket
-
-        :type dataroot: str
-        :param dataroot: The Root of the Data-storage
-        :return: Bucket
-        """
-        bucket_name = dataroot.split("/")[2]
-        print(f"Using Bucket: {bucket_name} for storing artifacts")
-        c = storage.Client()
-        b = c.get_bucket(bucket_name)
-        assert b.exists(), f"Bucket {bucket_name} dos't exist. Try different one"
-        return b
 
     def save_file_to_cloud(self, file_path_cloud, file_path_local):
         self.bucket.blob(file_path_cloud).upload_from_filename(file_path_local)

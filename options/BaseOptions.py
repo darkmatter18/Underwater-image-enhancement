@@ -2,7 +2,7 @@ import os
 import time
 import torch
 import argparse
-from utils import mkdirs
+from utils import mkdirs, setup_cloud_bucket
 from torch import distributed
 
 
@@ -91,15 +91,22 @@ class BaseOptions:
             opt_file.write(message)
             opt_file.write('\n')
 
+        if opt.isCloud:
+            b = setup_cloud_bucket(opt.dataroot)
+            # TODO
+
     def parse(self):
         opt = self.parser.parse_args()
         opt.isTrain = self.isTrain
         if self.isTrain:
-            opt.name = opt.name + str(time.time())
+            opt.name = opt.name + str(int(time.time()))
 
         # IsCloud setup
         if opt.dataroot.startswith('gs://'):
             opt.isCloud = True
+            opt.bucket_name = opt.dataroot.split("/")[2]
+            opt.dataroot = "/".join(opt.dataroot.split("/")[3:])
+            opt.checkpoints_dir = "/".join(opt.checkpoints_dir.split("/")[3:])
         else:
             opt.isCloud = False
 

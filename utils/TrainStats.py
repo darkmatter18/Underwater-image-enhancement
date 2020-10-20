@@ -10,31 +10,27 @@ class TrainStats:
     def __init__(self, opt):
         self.isCloud = opt.isCloud
         # create a logging file to store training losses
-        if self.isCloud:
-            # G-Cloud
-            self.bucket = setup_cloud_bucket(opt.checkpoints_dir)
-            self.log_name = 'loss_log.txt'
-            self.loss_name = 'loss_stats.pkl'
-            self.cloud_log_name = os.path.join("/".join(opt.checkpoints_dir.split("/")[3:]), opt.name, 'loss_log.txt')
-            self.cloud_loss_name = os.path.join("/".join(opt.checkpoints_dir.split("/")[3:]), opt.name,
-                                                'loss_stats.pkl')
-            self.img_dir = os.path.join("/".join(opt.checkpoints_dir.split("/")[3:]), opt.name, 'visuals')
-        else:
-            # Local
-            self.log_name = os.path.join(opt.checkpoints_dir, opt.name, 'loss_log.txt')
-            self.loss_name = os.path.join(opt.checkpoints_dir, opt.name, 'loss_stats.pkl')
-            self.img_dir = os.path.join(opt.checkpoints_dir, opt.name, 'visuals')
-
+        self.log_loss_dir = os.path.join(opt.checkpoints_dir, opt.name)
+        self.img_dir = os.path.join(opt.checkpoints_dir, opt.name, 'visuals')
+        self.log_file_name = 'loss_log.txt'
+        self.loss_file_name = 'loss_stats.pkl'
         self.losses = {'loss_idt_A': [], 'loss_idt_B': [], 'loss_D_A': [], 'loss_D_B': [], 'loss_G_AtoB': [],
                        'loss_G_BtoA': [], 'cycle_loss_A': [], 'cycle_loss_B': []}
 
-        with open(self.log_name, "a") as log_file:
+        if self.isCloud:
+            # G-Cloud
+            self.bucket = setup_cloud_bucket(opt.bucket_name)
+            lss = self.log_file_name
+        else:
+            lss = os.path.join(self.log_loss_dir, self.log_file_name)
+
+        with open(lss, "a") as log_file:
             now = time.strftime("%c")
             log_file.write('================ Training Loss (%s) ================\n' % now)
 
         # Save log to Cloud, if needed
         if self.isCloud:
-            self.save_file_to_cloud(self.cloud_log_name, self.log_name)
+            self.save_file_to_cloud(self.log_loss_dir, self.log_file_name)
 
     def save_file_to_cloud(self, file_path_cloud, file_path_local):
         self.bucket.blob(file_path_cloud).upload_from_filename(file_path_local)
@@ -58,17 +54,24 @@ class TrainStats:
             self.losses[k].append(v)
             message += '%s: %.3f ' % (k, v)
 
+        if self.isCloud:
+            lss = self.log_file_name
+            liss = self.loss_file_name
+        else:
+            lss = os.path.join(self.log_loss_dir, self.log_file_name)
+            liss = os.path.join(self.log_loss_dir, self.loss_file_name)
+
         print(message)  # print the message
-        with open(self.log_name, "a") as log_file:
+        with open(lss, "a") as log_file:
             log_file.write('%s\n' % message)
 
-        with open(self.loss_name, 'wb') as f:
+        with open(liss, 'wb') as f:
             pickle.dump(self.losses, f)
 
         # Save log to Cloud, if needed
         if self.isCloud:
-            self.save_file_to_cloud(self.cloud_log_name, self.log_name)
-            self.save_file_to_cloud(self.cloud_loss_name, self.loss_name)
+            self.save_file_to_cloud(self.log_loss_dir, self.log_file_name)
+            self.save_file_to_cloud(self.log_loss_dir, self.loss_file_name)
 
     def save_current_visuals(self, images, prefix):
         """Save Current Produced images

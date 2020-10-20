@@ -18,7 +18,7 @@ class CustomDataset(Dataset):
     def __init__(self, dataroot: str, phase: str, max_dataset_size: float = float("inf"), direction: str = "AtoB",
                  input_nc: int = 3, output_nc: int = 3, serial_batches: bool = True,
                  preprocess: str = 'resize_and_crop', flip: bool = True, load_size: int = 286, crop_size: int = 256,
-                 isCloud: bool = False):
+                 isCloud: bool = False, bucket_name: str = ''):
         """
         Custom Dataset for feeding Image to the network
 
@@ -34,6 +34,7 @@ class CustomDataset(Dataset):
         :param load_size: Size of the image on load. Default: 286
         :param crop_size: Size of the image after resize. Default: 256
         :param isCloud: Is the dataset from cloud
+        :param bucket_name: Name of the Cloud Bucket (Applicable, when isCloud is True)
         """
 
         self.dataroot = dataroot
@@ -48,18 +49,16 @@ class CustomDataset(Dataset):
         self.load_size = load_size
         self.crop_size = crop_size
         self.isCloud = isCloud
+        self.bucket_name = bucket_name
+
+        self.dir_A = os.path.join(self.dataroot, self.phase + 'A')  # create a path '/path/to/data/trainA'
+        self.dir_B = os.path.join(self.dataroot, self.phase + 'B')  # create a path '/path/to/data/trainB'
 
         if self.isCloud:
-            # create a path '/path/to/data/trainA'
-            self.dir_A = os.path.join("/".join(self.dataroot.split("/")[3:]), self.phase + 'A')
-            # create a path '/path/to/data/trainB'
-            self.dir_B = os.path.join("/".join(self.dataroot.split("/")[3:]), self.phase + 'B')
-            self.bucket = setup_cloud_bucket(dataroot)
+            self.bucket = setup_cloud_bucket(bucket_name)
             self.A_paths = sorted(self.make_cloud_dataset(self.dir_A, self.max_dataset_size))
             self.B_paths = sorted(self.make_cloud_dataset(self.dir_B, self.max_dataset_size))
         else:
-            self.dir_A = os.path.join(self.dataroot, self.phase + 'A')  # create a path '/path/to/data/trainA'
-            self.dir_B = os.path.join(self.dataroot, self.phase + 'B')  # create a path '/path/to/data/trainB'
             self.A_paths = sorted(
                 self.make_dataset(self.dir_A, self.max_dataset_size))  # load images from '/path/to/data/trainA'
             self.B_paths = sorted(

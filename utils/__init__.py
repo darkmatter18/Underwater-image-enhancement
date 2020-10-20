@@ -28,12 +28,11 @@ def mkdir(path):
 def setup_cloud_bucket(dataroot: str):
     """Setup Google Cloud Bucket
 
-
     :param dataroot: The Root of the Data-storage
     :return: Bucket
     """
     bucket_name = dataroot.split("/")[2]
-    print(f"Using Bucket: {bucket_name} for storing artifacts")
+    print(f"Using Bucket: {bucket_name} for storing and Loading")
     c = storage.Client()
     b = c.get_bucket(bucket_name)
     assert b.exists(), f"Bucket {bucket_name} dos't exist. Try different one"

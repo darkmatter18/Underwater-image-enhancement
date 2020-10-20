@@ -3,7 +3,7 @@ import utils
 import random
 import numpy as np
 from PIL import Image
-from google.cloud import storage
+from utils import setup_cloud_bucket
 from torch.utils.data import Dataset
 import torchvision.transforms as transforms
 
@@ -52,7 +52,7 @@ class CustomDataset(Dataset):
             self.dir_A = os.path.join("/".join(self.dataroot.split("/")[3:]), self.phase + 'A')
             # create a path '/path/to/data/trainB'
             self.dir_B = os.path.join("/".join(self.dataroot.split("/")[3:]), self.phase + 'B')
-            self.bucket = self.setup_cloud_bucket(dataroot)
+            self.bucket = setup_cloud_bucket(dataroot)
             self.A_paths = sorted(self.make_cloud_dataset(self.dir_A, self.max_dataset_size))
             self.B_paths = sorted(self.make_cloud_dataset(self.dir_B, self.max_dataset_size))
         else:
@@ -99,19 +99,6 @@ class CustomDataset(Dataset):
                     path = os.path.join(root, fname)
                     images.append(path)
         return images[:min(max_dataset_size, len(images))]
-
-    def setup_cloud_bucket(self, dataroot: str):
-        """Setup Google Cloud Bucket
-
-        :param dataroot: The Root of the Data-storage
-        :return: Bucket
-        """
-        bucket_name = dataroot.split("/")[2]
-        print(f"Using Bucket: {bucket_name} for fetching dataset")
-        c = storage.Client()
-        b = c.get_bucket(bucket_name)
-        assert b.exists(), f"Bucket {bucket_name} dos't exist. Try different one"
-        return b
 
     def make_cloud_dataset(self, dataset_dir: str, max_dataset_size: float = float("inf")):
         """Make dataset from Google Cloud Storage

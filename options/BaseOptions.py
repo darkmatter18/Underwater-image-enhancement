@@ -94,6 +94,8 @@ class BaseOptions:
     def parse(self):
         opt = self.parser.parse_args()
         opt.isTrain = self.isTrain
+        if self.isTrain:
+            opt.name = opt.name + str(time.time())
         self.print_options(opt)
 
         # set gpu ids
@@ -115,7 +117,5 @@ class BaseOptions:
             device_ids = []
             print('No GPU. switching to CPU')
         opt.gpu_ids = device_ids
-        if self.isTrain:
-            opt.name = opt.name + str(time.time())
 
         return opt

@@ -247,9 +247,11 @@ class CycleGan:
         :type bidirectional: bool
         :param bidirectional: if true, Calculate both AtoB and BtoA, else calculate AtoB
         """
-        self.fake_B = self.G_AtoB(self.real_A)
-        if bidirectional:
-            self.fake_A = self.G_BtoA(self.real_B)
+        self.eval()
+        with torch.no_grad():
+            self.fake_B = self.G_AtoB(self.real_A)
+            if bidirectional:
+                self.fake_A = self.G_BtoA(self.real_B)
 
     def load_objects(self, file_names, object_names):
         """Load objects from file

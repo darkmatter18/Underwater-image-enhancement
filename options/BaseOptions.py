@@ -96,6 +96,13 @@ class BaseOptions:
         opt.isTrain = self.isTrain
         if self.isTrain:
             opt.name = opt.name + str(time.time())
+
+        # IsCloud setup
+        if opt.dataroot.startswith('gs://'):
+            opt.isCloud = True
+        else:
+            opt.isCloud = False
+
         self.print_options(opt)
 
         # set gpu ids

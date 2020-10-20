@@ -15,8 +15,8 @@ class CycleGan:
         self.opt = opt
         self.gpu_ids = opt.gpu_ids
         self.isTrain = opt.isTrain
-        self.isCloud = opt.checkpoints_dir.startswith('gs://')
-        if self.isCloud:
+
+        if self.opt.isCloud:
             self.save_dir = os.path.join("/".join(opt.checkpoints_dir.split("/")[3:]), opt.name)
             self.bucket = setup_cloud_bucket(opt.checkpoints_dir)
         else:
@@ -336,20 +336,20 @@ class CycleGan:
         :type name: str
         :param name: Name of the optimizer
         """
-        if self.isCloud:
+        if self.opt.isCloud:
             save_path = name
         else:
             save_path = os.path.join(self.save_dir, name)
 
         torch.save(optim_or_scheduler.state_dict(), save_path)
 
-        if self.isCloud:
+        if self.opt.isCloud:
             self.save_file_to_cloud(os.path.join(self.save_dir, save_path), save_path)
             os.remove(save_path)
 
     def save_network(self, net, net_name, epoch):
         save_filename = '%s_net_%s.pt' % (epoch, net_name)
-        if self.isCloud:
+        if self.opt.isCloud:
             save_path = save_filename
         else:
             save_path = os.path.join(self.save_dir, save_filename)
@@ -360,7 +360,7 @@ class CycleGan:
         else:
             torch.save(net.cpu().state_dict(), save_path)
 
-        if self.isCloud:
+        if self.opt.isCloud:
             self.save_file_to_cloud(os.path.join(self.save_dir, save_path), save_path)
             os.remove(save_path)
 

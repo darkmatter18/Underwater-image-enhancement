@@ -2,6 +2,7 @@ import os
 import torch
 import numpy as np
 from google.cloud import storage
+from google.cloud.storage import Bucket
 
 
 def mkdirs(paths):
@@ -25,7 +26,7 @@ def mkdir(path):
         os.makedirs(path)
 
 
-def setup_cloud_bucket(dataroot: str):
+def setup_cloud_bucket(dataroot: str) -> Bucket:
     """Setup Google Cloud Bucket
 
     :param dataroot: The Root of the Data-storage

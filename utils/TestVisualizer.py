@@ -11,21 +11,19 @@ class TestVisualizer:
         self.dataroot = opt.dataroot
         self.phase = opt.phase
 
-        if self.dataroot.startswith('gs://'):
-            self.isCloud = True
+        if self.opt.isCloud:
             # create a path '/path/to/data/trainA'
             self.dir_A = os.path.join("/".join(self.dataroot.split("/")[3:]), self.phase + 'A')
             # create a path '/path/to/data/trainB'
             self.dir_B = os.path.join("/".join(self.dataroot.split("/")[3:]), self.phase + 'B')
 
         else:
-            self.isCloud = False
             self.dir_A = os.path.join(self.dataroot, self.phase + 'A')  # create a path '/path/to/data/trainA'
             self.dir_B = os.path.join(self.dataroot, self.phase + 'B')  # create a path '/path/to/data/trainB'
 
     def open_image(self, image_path: str):
         img = None
-        if self.isCloud:
+        if self.opt.isCloud:
             print("Cloud Inference is not supported")
         else:
             # img = Image.open(image_path).convert('RGB')

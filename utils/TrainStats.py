@@ -8,9 +8,8 @@ from . import setup_cloud_bucket
 
 class TrainStats:
     def __init__(self, opt):
-
+        self.isCloud = opt.isCloud
         # create a logging file to store training losses
-        self.isCloud = opt.checkpoints_dir.startswith('gs://')
         if self.isCloud:
             # G-Cloud
             self.bucket = setup_cloud_bucket(opt.checkpoints_dir)

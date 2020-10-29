@@ -269,9 +269,15 @@ class CycleGan:
         """
         for file_name, object_name in zip(file_names, object_names):
             model_name = os.path.join(self.save_dir, file_name)
-            print(f"Loading {object_name} from {model_name}")
-            net = getattr(self, object_name)
-            net.load_state_dict(torch.load(model_name, map_location=self.device))
+            if self.opt.isCloud:
+                self.bucket.get_blob(os.path.join(self.save_dir, file_name)).download_to_filename(file_name)
+                print(f"Loading {object_name} from {model_name}")
+                net = getattr(self, object_name)
+                net.load_state_dict(torch.load(file_name, map_location=self.device))
+            else:
+                print(f"Loading {object_name} from {model_name}")
+                net = getattr(self, object_name)
+                net.load_state_dict(torch.load(model_name, map_location=self.device))
 
     def load_networks(self, initials, load_D=False):
         """ Loading Models
@@ -291,10 +297,21 @@ class CycleGan:
         self._load_objects(file_names, object_names)
 
     def load_lr_schedulers(self, initials):
-        print(f"Loading scheduler-0 from {initials}_scheduler_0.pt")
-        self.schedulers[0].load_state_dict(torch.load(os.path.join(self.save_dir, f"{initials}_scheduler_0.pt")))
-        print(f"Loading scheduler-1 from {initials}_scheduler_1.pt")
-        self.schedulers[1].load_state_dict(torch.load(os.path.join(self.save_dir, f"{initials}_scheduler_1.pt")))
+        s_file_name_0 = os.path.join(self.save_dir, f"{initials}_scheduler_0.pt")
+        s_file_name_1 = os.path.join(self.save_dir, f"{initials}_scheduler_1.pt")
+
+        if self.opt.isCloud:
+            self.bucket.get_blob(s_file_name_0).download_to_filename(f"{initials}_scheduler_0.pt")
+            self.bucket.get_blob(s_file_name_1).download_to_filename(f"{initials}_scheduler_0.pt")
+            print(f"Loading scheduler-0 from {s_file_name_0}")
+            self.schedulers[0].load_state_dict(torch.load(f"{initials}_scheduler_0.pt"))
+            print(f"Loading scheduler-1 from {s_file_name_1}")
+            self.schedulers[1].load_state_dict(torch.load(f"{initials}_scheduler_0.pt"))
+        else:
+            print(f"Loading scheduler-0 from {s_file_name_0}")
+            self.schedulers[0].load_state_dict(torch.load(s_file_name_0))
+            print(f"Loading scheduler-1 from {s_file_name_1}")
+            self.schedulers[1].load_state_dict(torch.load(s_file_name_1))
 
     def load_train_model(self, initials):
         """ Loading Models for training purpose

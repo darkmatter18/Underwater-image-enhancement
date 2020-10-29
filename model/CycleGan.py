@@ -93,6 +93,12 @@ class CycleGan:
         for net_name in self.net_names:
             print(net_name, "\n", getattr(self, net_name))
 
+        # Continue training, if isTrain
+        if self.isTrain:
+            if self.opt.ct > 0:
+                print(f"Continue training from {self.opt.ct}")
+                self.load_train_model(str(self.opt.ct))
+
     def update_learning_rate(self):
         """Update learning rates for all the networks; called at the end of every epoch"""
         old_lr = self.optimizers[0].param_groups[0]['lr']
@@ -251,7 +257,7 @@ class CycleGan:
             if bidirectional:
                 self.fake_A = self.G_BtoA(self.real_B)
 
-    def load_objects(self, file_names, object_names):
+    def _load_objects(self, file_names, object_names):
         """Load objects from file
 
         :type file_names: list
@@ -282,10 +288,12 @@ class CycleGan:
 
         object_names = ['G_AtoB', 'G_BtoA'] if not load_D else ['G_AtoB', 'G_BtoA', 'D_A', 'D_B']
 
-        self.load_objects(file_names, object_names)
+        self._load_objects(file_names, object_names)
 
     def load_lr_schedulers(self, initials):
+        print(f"Loading scheduler-0 from {initials}_scheduler_0.pt")
         self.schedulers[0].load_state_dict(torch.load(os.path.join(self.save_dir, f"{initials}_scheduler_0.pt")))
+        print(f"Loading scheduler-1 from {initials}_scheduler_1.pt")
         self.schedulers[1].load_state_dict(torch.load(os.path.join(self.save_dir, f"{initials}_scheduler_1.pt")))
 
     def load_train_model(self, initials):
@@ -296,10 +304,10 @@ class CycleGan:
         """
         self.load_networks(initials, load_D=True)
 
-        file_names = [os.path.join(self.save_dir, f"{initials}_optim_G.pt"),
-                      os.path.join(self.save_dir, f"{initials}_optim_D.pt")]
-        object_names = ['optimizer_G', 'optimizer_D']
-        self.load_objects(file_names, object_names)
+        optim_file_names = [f"{initials}_optim_G.pt", f"{initials}_optim_D.pt"]
+        optim_object_names = ['optimizer_G', 'optimizer_D']
+
+        self._load_objects(optim_file_names, optim_object_names)
 
         self.load_lr_schedulers(initials)
 

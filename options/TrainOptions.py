@@ -17,6 +17,9 @@ class TrainOptions(BaseOptions):
 
         # network saving and loading parameters
         parser.add_argument('--phase', type=str, default='train', help='train, val, test, etc')
+        parser.add_argument('--ct', type=int, default=0, help='Adding continue training. '
+                                                              'The value is the epoch no, which the model will start '
+                                                              'training from, and loads the model from.')
         parser.add_argument('--epoch_count', type=int, default=1,
                             help='the starting epoch count, '
                                  'we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>,')

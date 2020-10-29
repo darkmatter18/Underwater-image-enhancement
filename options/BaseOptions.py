@@ -94,8 +94,14 @@ class BaseOptions:
     def parse(self):
         opt = self.parser.parse_args()
         opt.isTrain = self.isTrain
+
+        # Add Time stamp in the name
         if self.isTrain:
             opt.name = opt.name + str(int(time.time()))
+
+        # Setup Continue training, if continue training, change the epoch_count with the value of ct
+        if opt.ct > 0:
+            opt.epoch_count = opt.ct
 
         # IsCloud setup
         if opt.dataroot.startswith('gs://'):

@@ -25,6 +25,7 @@ class BaseOptions:
         parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')
         parser.add_argument('--name', type=str, default='uwie',
                             help='name of the experiment. It decides where to store samples and models')
+        parser.add_argument('--name_time', action='store_true', help='Add Timestamp after name')
         parser.add_argument('--dataroot', required=True, type=str,
                             help="path to images (should have sub folders trainA, trainB, valA, valB, etc)")
         parser.add_argument('--no_gpu', action='store_true', help='Use only CPU')
@@ -96,7 +97,7 @@ class BaseOptions:
         opt.isTrain = self.isTrain
 
         # Add Time stamp in the name
-        if self.isTrain:
+        if self.isTrain and opt.name_time:
             opt.name = opt.name + str(int(time.time()))
 
         # Setup Continue training, if continue training, change the epoch_count with the value of ct

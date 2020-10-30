@@ -100,7 +100,7 @@ class BaseOptions:
             opt.name = opt.name + str(int(time.time()))
 
         # Setup Continue training, if continue training, change the epoch_count with the value of ct
-        if opt.ct > 0:
+        if self.isTrain and opt.ct > 0:
             opt.epoch_count = opt.ct
 
         # IsCloud setup
@@ -110,6 +110,7 @@ class BaseOptions:
             opt.dataroot = "/".join(opt.dataroot.split("/")[3:])
             opt.checkpoints_dir = "/".join(opt.checkpoints_dir.split("/")[3:])
         else:
+            opt.bucket_name = ''
             opt.isCloud = False
 
         self.print_options(opt)

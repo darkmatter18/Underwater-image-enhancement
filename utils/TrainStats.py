@@ -30,7 +30,7 @@ class TrainStats:
 
         # Save log to Cloud, if needed
         if self.isCloud:
-            self.save_file_to_cloud(self.log_loss_dir, self.log_file_name)
+            self.save_file_to_cloud(os.path.join(self.log_loss_dir, self.log_file_name), self.log_file_name)
 
     def save_file_to_cloud(self, file_path_cloud, file_path_local):
         self.bucket.blob(file_path_cloud).upload_from_filename(file_path_local)
@@ -70,8 +70,8 @@ class TrainStats:
 
         # Save log to Cloud, if needed
         if self.isCloud:
-            self.save_file_to_cloud(self.log_loss_dir, self.log_file_name)
-            self.save_file_to_cloud(self.log_loss_dir, self.loss_file_name)
+            self.save_file_to_cloud(os.path.join(self.log_loss_dir, self.log_file_name), self.log_file_name)
+            self.save_file_to_cloud(os.path.join(self.log_loss_dir, self.loss_file_name), self.loss_file_name)
 
     def save_current_visuals(self, images, prefix):
         """Save Current Produced images

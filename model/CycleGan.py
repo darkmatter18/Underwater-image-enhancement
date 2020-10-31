@@ -19,7 +19,7 @@ class CycleGan:
         self.save_dir = os.path.join(opt.checkpoints_dir, opt.name)
         if self.opt.isCloud:
             self.bucket = setup_cloud_bucket(opt.bucket_name)
-        self.device = torch.device('cuda:{}'.format(self.gpu_ids[0])) if self.gpu_ids else torch.device('cpu')
+        self.device = torch.device(f'cuda:{self.gpu_ids[0]}') if self.gpu_ids else torch.device('cpu')
         self.metric = 0  # used for learning rate policy 'plateau'
 
         self.G_AtoB = build_G(input_nc=opt.input_nc, output_nc=opt.output_nc, ngf=opt.ngf, norm=opt.norm,
@@ -272,12 +272,15 @@ class CycleGan:
             if self.opt.isCloud:
                 self.bucket.get_blob(os.path.join(self.save_dir, file_name)).download_to_filename(file_name)
                 print(f"Loading {object_name} from {model_name}")
-                net = getattr(self, object_name)
-                net.load_state_dict(torch.load(file_name, map_location=self.device))
+                state_dict = torch.load(file_name, map_location=self.device)
             else:
                 print(f"Loading {object_name} from {model_name}")
-                net = getattr(self, object_name)
-                net.load_state_dict(torch.load(model_name, map_location=self.device))
+                state_dict = torch.load(model_name, map_location=self.device)
+
+            net = getattr(self, object_name)
+            if isinstance(net, torch.nn.DataParallel):
+                net = net.module
+            net.load_state_dict(state_dict)
 
     def load_networks(self, initials, load_D=False):
         """ Loading Models
@@ -304,14 +307,14 @@ class CycleGan:
             self.bucket.get_blob(s_file_name_0).download_to_filename(f"{initials}_scheduler_0.pt")
             self.bucket.get_blob(s_file_name_1).download_to_filename(f"{initials}_scheduler_0.pt")
             print(f"Loading scheduler-0 from {s_file_name_0}")
-            self.schedulers[0].load_state_dict(torch.load(f"{initials}_scheduler_0.pt"))
+            self.schedulers[0].load_state_dict(torch.load(f"{initials}_scheduler_0.pt", map_location=self.device))
             print(f"Loading scheduler-1 from {s_file_name_1}")
-            self.schedulers[1].load_state_dict(torch.load(f"{initials}_scheduler_0.pt"))
+            self.schedulers[1].load_state_dict(torch.load(f"{initials}_scheduler_0.pt", map_location=self.device))
         else:
             print(f"Loading scheduler-0 from {s_file_name_0}")
-            self.schedulers[0].load_state_dict(torch.load(s_file_name_0))
+            self.schedulers[0].load_state_dict(torch.load(s_file_name_0, map_location=self.device))
             print(f"Loading scheduler-1 from {s_file_name_1}")
-            self.schedulers[1].load_state_dict(torch.load(s_file_name_1))
+            self.schedulers[1].load_state_dict(torch.load(s_file_name_1, map_location=self.device))
 
     def load_train_model(self, initials):
         """ Loading Models for training purpose

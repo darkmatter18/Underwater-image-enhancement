@@ -114,8 +114,6 @@ class BaseOptions:
             opt.bucket_name = ''
             opt.isCloud = False
 
-        self.print_options(opt)
-
         # set gpu ids
         if not opt.no_gpu and torch.cuda.is_available():
             device_ids = list(range(torch.cuda.device_count()))
@@ -135,5 +133,7 @@ class BaseOptions:
             device_ids = []
             print('No GPU. switching to CPU')
         opt.gpu_ids = device_ids
+
+        self.print_options(opt)
 
         return opt

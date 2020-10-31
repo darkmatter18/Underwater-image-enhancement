@@ -11,4 +11,5 @@ class TestOptions(BaseOptions):
 
         parser.add_argument('--phase', type=str, default='train', help='train, val, test, etc')
         parser.add_argument('--load_model', type=str, default='latest', help="name of the models to load")
+        parser.add_argument('--examples', type=int, default=1, help='No of examples for testing')
         return parser

@@ -22,11 +22,18 @@ def main():
     cycleGan = CycleGan(opt)
     cycleGan.load_networks(opt.load_model)
 
-    x = next(iter(dataset))
+    dataset_iter = iter(dataset)
+    no_of_examples = int(opt.examples)
 
-    cycleGan.feed_input(x)
-    cycleGan.compute_visuals()
-    viz.display_inference(cycleGan.get_current_visuals(), cycleGan.get_current_image_path())
+    print(f"Testing for {no_of_examples} examples")
+    while no_of_examples > 0:
+        data = next(dataset_iter)
+        cycleGan.feed_input(data)
+        cycleGan.compute_visuals()
+        viz.add_inference(cycleGan.get_current_visuals(), cycleGan.get_current_image_path())
+        no_of_examples -= 1
+
+    viz.display_inference()
 
 
 if __name__ == '__main__':

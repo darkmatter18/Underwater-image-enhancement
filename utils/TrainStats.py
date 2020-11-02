@@ -12,8 +12,8 @@ class TrainStats:
         # create a logging file to store training losses
         self.log_loss_dir = os.path.join(opt.checkpoints_dir, opt.name)
         self.img_dir = os.path.join(opt.checkpoints_dir, opt.name, 'visuals')
-        self.log_file_name = 'loss_log.txt'
-        self.loss_file_name = 'loss_stats.pkl'
+        self.log_file_name = f'loss_log_{str(int(time.time()))}.txt'
+        self.loss_file_name = f'loss_stats_{str(int(time.time()))}.pkl'
         self.losses = {'loss_idt_A': [], 'loss_idt_B': [], 'loss_D_A': [], 'loss_D_B': [], 'loss_G_AtoB': [],
                        'loss_G_BtoA': [], 'cycle_loss_A': [], 'cycle_loss_B': []}
 

@@ -1,3 +1,5 @@
+from typing import Callable, List, Union
+
 import torch
 import functools
 from torch import nn
@@ -9,7 +11,8 @@ from torch.optim import lr_scheduler
 class ResnetBlock(nn.Module):
     """Define a Resnet block"""
 
-    def __init__(self, dim, norm_layer=nn.BatchNorm2d, padding_type='reflect', use_dropout=True, use_bias=True):
+    def __init__(self, dim, norm_layer: Callable[..., nn.Module] = nn.BatchNorm2d, padding_type='reflect',
+                 use_dropout=True, use_bias=True):
         """Initialize the Resnet block
 
         Construct a convolutional block.
@@ -96,8 +99,9 @@ class ResnetGenerator(nn.Module):
     https://github.com/jcjohnson/fast-neural-style
     """
 
-    def __init__(self, input_nc, output_nc, ngf=64, norm_layer=nn.BatchNorm2d, padding_type='reflect',
-                 use_dropout=False, n_blocks=9):
+    def __init__(self, input_nc, output_nc, ngf=64,
+                 norm_layer: Union[functools.partial, Callable[..., nn.Module]] = nn.BatchNorm2d,
+                 padding_type='reflect', use_dropout=False, n_blocks=9):
         """Construct a Resnet-based generator
 
         :param input_nc: the number of channels in input images
@@ -162,7 +166,8 @@ class ResnetGenerator(nn.Module):
 class NLayerDiscriminator(nn.Module):
     """Defines a PatchGAN discriminator"""
 
-    def __init__(self, input_nc, ndf=64, n_layers=3, norm_layer=nn.BatchNorm2d):
+    def __init__(self, input_nc, ndf=64, n_layers=3,
+                 norm_layer: Union[functools.partial, Callable[..., nn.Module]] = nn.BatchNorm2d):
         """Construct a PatchGAN discriminator
 
         Parameters:
@@ -281,11 +286,11 @@ class GANLoss(nn.Module):
 
 
 class Identity(nn.Module):
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         return x
 
 
-def get_norm_layer(norm_type='instance'):
+def get_norm_layer(norm_type='instance') -> Union[nn.Module, functools.partial]:
     """Return a normalization layer
 
     Parameters:
@@ -342,7 +347,7 @@ def init_weights(net, init_type='normal', init_gain=0.02):
     net.apply(init_func)  # apply the initialization function <init_func>
 
 
-def init_net(net, init_type='normal', init_gain=0.02, gpu_ids=[]):
+def init_net(net, init_type='normal', init_gain=0.02, gpu_ids: List = None):
     """Initialize a network:
     1. register CPU/GPU device (with multi-GPU support);
     2. initialize the network weights
@@ -363,7 +368,7 @@ def init_net(net, init_type='normal', init_gain=0.02, gpu_ids=[]):
 
 
 def build_G(input_nc=3, output_nc=3, ngf=64, norm='batch', padding_type='reflect', use_dropout=True, n_blocks=9,
-            init_type='normal', init_gain=0.02, gpu_ids=[]):
+            init_type='normal', init_gain=0.02, gpu_ids: List = None):
     """Create a generator
 
     :param input_nc: the number of channels in input images
@@ -384,7 +389,7 @@ def build_G(input_nc=3, output_nc=3, ngf=64, norm='batch', padding_type='reflect
     return init_net(net, init_type, init_gain, gpu_ids)
 
 
-def build_D(input_nc=3, ndf=64, n_layers=3, norm='batch', init_type='normal', init_gain=0.02, gpu_ids=[]):
+def build_D(input_nc=3, ndf=64, n_layers=3, norm='batch', init_type='normal', init_gain=0.02, gpu_ids: List = None):
     """Create a discriminator
 
     :param input_nc: the number of channels in input images

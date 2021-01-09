@@ -1,9 +1,7 @@
 import os
-import utils
 import random
 import numpy as np
 from PIL import Image
-from utils import setup_cloud_bucket
 from torch.utils.data import Dataset
 import torchvision.transforms as transforms
 
@@ -54,15 +52,10 @@ class CustomDataset(Dataset):
         self.dir_A = os.path.join(self.dataroot, self.phase + 'A')  # create a path '/path/to/data/trainA'
         self.dir_B = os.path.join(self.dataroot, self.phase + 'B')  # create a path '/path/to/data/trainB'
 
-        if self.isCloud:
-            self.bucket = setup_cloud_bucket(bucket_name)
-            self.A_paths = sorted(self.make_cloud_dataset(self.dir_A, self.max_dataset_size))
-            self.B_paths = sorted(self.make_cloud_dataset(self.dir_B, self.max_dataset_size))
-        else:
-            self.A_paths = sorted(
-                self.make_dataset(self.dir_A, self.max_dataset_size))  # load images from '/path/to/data/trainA'
-            self.B_paths = sorted(
-                self.make_dataset(self.dir_B, self.max_dataset_size))  # load images from '/path/to/data/trainB'
+        self.A_paths = sorted(
+            self.make_dataset(self.dir_A, self.max_dataset_size))  # load images from '/path/to/data/trainA'
+        self.B_paths = sorted(
+            self.make_dataset(self.dir_B, self.max_dataset_size))  # load images from '/path/to/data/trainB'
 
         self.A_size = len(self.A_paths)  # get the size of dataset A
         self.B_size = len(self.B_paths)  # get the size of dataset B
@@ -98,24 +91,6 @@ class CustomDataset(Dataset):
                 if self.is_image_file(fname):
                     path = os.path.join(root, fname)
                     images.append(path)
-        return images[:min(max_dataset_size, len(images))]
-
-    def make_cloud_dataset(self, dataset_dir: str, max_dataset_size: float = float("inf")):
-        """Make dataset from Google Cloud Storage
-        Save all the images from GCS and returns file paths in a list
-
-        :param dataset_dir: Cloud Storage Dir (gs://bucket_name/dataset/dir)
-        :param max_dataset_size: Maximum size allowed for dataset
-        :return: List of file paths of the dataset
-        """
-        utils.mkdir(dataset_dir)
-        print(f'Loading Images into \"{dataset_dir}\"')
-        images = []
-        for b in self.bucket.list_blobs(prefix=dataset_dir):
-            if self.is_image_file(b.name):
-                images.append(b.name)
-                self.bucket.blob(b.name).download_to_filename(b.name)
-        print(f'Done loading {len(images)} Images for \"{dataset_dir}\"')
         return images[:min(max_dataset_size, len(images))]
 
     def get_transform(self, grayscale=False, convert=True):

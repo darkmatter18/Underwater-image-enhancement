@@ -104,16 +104,6 @@ class BaseOptions:
         if self.isTrain and opt.ct > 0:
             opt.epoch_count = opt.ct
 
-        # IsCloud setup
-        if opt.dataroot.startswith('gs://'):
-            opt.isCloud = True
-            opt.bucket_name = opt.dataroot.split("/")[2]
-            opt.dataroot = "/".join(opt.dataroot.split("/")[3:])
-            opt.checkpoints_dir = "/".join(opt.checkpoints_dir.split("/")[3:])
-        else:
-            opt.bucket_name = ''
-            opt.isCloud = False
-
         # set gpu ids
         if not opt.no_gpu and torch.cuda.is_available():
             device_ids = list(range(torch.cuda.device_count()))

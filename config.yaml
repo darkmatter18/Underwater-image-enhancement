@@ -1,4 +1,4 @@
-jobId: uwie_v191
+jobId: uwie_v194
 trainingInput:
   scaleTier: CUSTOM
   masterType: n1-standard-8
@@ -18,9 +18,11 @@ trainingInput:
     - "4"
     - "--lambda_identity"
     - "0"
-    - "--ct"
-    - "120"
-    - "--n_epochs"
-    - "100"
-    - "--n_epochs_decay"
-    - "150"
+    - "--norm"
+    - "batch"
+#    - "--ct"
+#    - "120"
+#    - "--n_epochs"
+#    - "100"
+#    - "--n_epochs_decay"
+#    - "150"

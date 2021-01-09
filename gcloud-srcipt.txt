@@ -1,1 +1,1 @@
-gcloud ai-platform jobs submit training uwie_v192 --region=us-central1 --job-dir=gs://arkadip-uie-store/models --package-path=./trainer --module-name=trainer.train --config=./config.yaml
+gcloud ai-platform jobs submit training uwie_v194 --region=us-central1 --job-dir=gs://arkadip-uie-store/models --package-path=./trainer --module-name=trainer.train --config=./config.yaml

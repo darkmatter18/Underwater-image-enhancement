@@ -1,8 +1,6 @@
 import os
 import torch
 import numpy as np
-from google.cloud import storage
-from google.cloud.storage import Bucket
 
 
 def mkdirs(paths):
@@ -24,19 +22,6 @@ def mkdir(path):
     """
     if not os.path.exists(path):
         os.makedirs(path)
-
-
-def setup_cloud_bucket(bucket_name: str) -> Bucket:
-    """Setup Google Cloud Bucket
-
-    :param bucket_name: The Root of the Data-storage
-    :return: Bucket
-    """
-    print(f"Using Bucket: {bucket_name} for storing and Loading Data")
-    c = storage.Client()
-    b = c.get_bucket(bucket_name)
-    assert b.exists(), f"Bucket {bucket_name} dos't exist. Try different one"
-    return b
 
 
 def tensor2im(input_image, imtype=np.uint8):

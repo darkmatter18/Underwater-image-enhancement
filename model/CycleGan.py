@@ -1,9 +1,12 @@
-import os
-import torch
-import itertools
 import collections
+import os
+from typing import List
+
+import itertools
+import torch
+from torch import nn
+
 from utils.image_pool import ImagePool
-from utils import setup_cloud_bucket
 from .networks import build_D, build_G, get_scheduler, GANLoss
 
 
@@ -17,8 +20,7 @@ class CycleGan:
         self.isTrain = opt.isTrain
 
         self.save_dir = os.path.join(opt.checkpoints_dir, opt.name)
-        if self.opt.isCloud:
-            self.bucket = setup_cloud_bucket(opt.bucket_name)
+
         self.device = torch.device(f'cuda:{self.gpu_ids[0]}') if self.gpu_ids else torch.device('cpu')
         self.metric = 0  # used for learning rate policy 'plateau'
 
@@ -42,9 +44,6 @@ class CycleGan:
 
             self.net_names.append('D_A')
             self.net_names.append('D_B')
-            # only works when input and output images have the same number of channels
-            if opt.lambda_identity > 0.0:
-                assert (opt.input_nc == opt.output_nc)
 
             # create image buffer to store previously generated images
             self.fake_A_pool = ImagePool(opt.pool_size)
@@ -131,13 +130,13 @@ class CycleGan:
         self.forward()
 
         # Train Generators
-        self.set_requires_grad([self.D_A, self.D_B], False)  # Ds require no gradients when optimizing Gs
+        self._set_requires_grad([self.D_A, self.D_B], False)  # Ds require no gradients when optimizing Gs
         self.optimizer_G.zero_grad()  # set G_A and G_B's gradients to zero
         self.backward_G()  # calculate gradients for G_A and G_B
         self.optimizer_G.step()  # update G_A and G_B's weights
 
         # Train Discriminators
-        self.set_requires_grad([self.D_A, self.D_B], True)
+        self._set_requires_grad([self.D_A, self.D_B], True)
         self.optimizer_D.zero_grad()
         self.backward_D_A()
         self.backward_D_B()
@@ -153,20 +152,8 @@ class CycleGan:
         self.rec_B = self.G_AtoB(self.fake_A)  # G_A(G_B(B))
 
     def backward_G(self):
-        lambda_idt = self.opt.lambda_identity
         lambda_A = self.opt.lambda_A
         lambda_B = self.opt.lambda_B
-        # Identity Loss
-        if lambda_idt > 0:
-            # G_A should be identity if real_B is fed: ||G_AtoB(B) - B||
-            self.idt_A = self.G_AtoB(self.real_B)
-            self.loss_idt_A = self.criterionIdt(self.idt_A, self.real_B) * lambda_B * lambda_idt
-            # G_B should be identity if real_A is fed: ||G_BtoA(A) - A||
-            self.idt_B = self.G_AtoB(self.real_A)
-            self.loss_idt_B = self.criterionIdt(self.idt_B, self.real_A) * lambda_A * lambda_idt
-        else:
-            self.loss_idt_A = 0
-            self.loss_idt_B = 0
 
         # GAN loss D_A(G_AtoB(A))
         self.loss_G_AtoB = self.criterionGAN(self.D_A(self.fake_B), True)
@@ -214,15 +201,12 @@ class CycleGan:
         fake_A = self.fake_A_pool.query(self.fake_A)
         self.loss_D_B = self.backward_D_basic(self.D_B, self.real_A, fake_A)
 
-    def set_requires_grad(self, nets, requires_grad=False):
+    def _set_requires_grad(self, nets: List[nn.Module], requires_grad: bool = False) -> None:
         """
         Set requires_grad=False for all the networks to avoid unnecessary computations
         :param nets: a list of networks
-        :type requires_grad: bool
         :param requires_grad: whether the networks require gradients or not
         """
-        if not isinstance(nets, list):
-            nets = [nets]
         for net in nets:
             if net is not None:
                 for param in net.parameters():
@@ -257,25 +241,18 @@ class CycleGan:
             if bidirectional:
                 self.fake_A = self.G_BtoA(self.real_B)
 
-    def _load_objects(self, file_names, object_names):
+    def _load_objects(self, file_names: List[str], object_names: List[str]):
         """Load objects from file
 
-        :type file_names: list
         :param file_names: Name of the Files to load
-        :type object_names: list
         :param object_names: Name of the object, where the files is going to be stored.
 
         file_names and object_names should be in same order
         """
         for file_name, object_name in zip(file_names, object_names):
             model_name = os.path.join(self.save_dir, file_name)
-            if self.opt.isCloud:
-                self.bucket.get_blob(os.path.join(self.save_dir, file_name)).download_to_filename(file_name)
-                print(f"Loading {object_name} from {model_name}")
-                state_dict = torch.load(file_name, map_location=self.device)
-            else:
-                print(f"Loading {object_name} from {model_name}")
-                state_dict = torch.load(model_name, map_location=self.device)
+            print(f"Loading {object_name} from {model_name}")
+            state_dict = torch.load(model_name, map_location=self.device)
 
             net = getattr(self, object_name)
             if isinstance(net, torch.nn.DataParallel):
@@ -303,18 +280,10 @@ class CycleGan:
         s_file_name_0 = os.path.join(self.save_dir, f"{initials}_scheduler_0.pt")
         s_file_name_1 = os.path.join(self.save_dir, f"{initials}_scheduler_1.pt")
 
-        if self.opt.isCloud:
-            self.bucket.get_blob(s_file_name_0).download_to_filename(f"{initials}_scheduler_0.pt")
-            self.bucket.get_blob(s_file_name_1).download_to_filename(f"{initials}_scheduler_0.pt")
-            print(f"Loading scheduler-0 from {s_file_name_0}")
-            self.schedulers[0].load_state_dict(torch.load(f"{initials}_scheduler_0.pt", map_location=self.device))
-            print(f"Loading scheduler-1 from {s_file_name_1}")
-            self.schedulers[1].load_state_dict(torch.load(f"{initials}_scheduler_0.pt", map_location=self.device))
-        else:
-            print(f"Loading scheduler-0 from {s_file_name_0}")
-            self.schedulers[0].load_state_dict(torch.load(s_file_name_0, map_location=self.device))
-            print(f"Loading scheduler-1 from {s_file_name_1}")
-            self.schedulers[1].load_state_dict(torch.load(s_file_name_1, map_location=self.device))
+        print(f"Loading scheduler-0 from {s_file_name_0}")
+        self.schedulers[0].load_state_dict(torch.load(s_file_name_0, map_location=self.device))
+        print(f"Loading scheduler-1 from {s_file_name_1}")
+        self.schedulers[1].load_state_dict(torch.load(s_file_name_1, map_location=self.device))
 
     def load_train_model(self, initials):
         """ Loading Models for training purpose
@@ -362,16 +331,9 @@ class CycleGan:
         :type name: str
         :param name: Name of the optimizer
         """
-        if self.opt.isCloud:
-            save_path = name
-        else:
-            save_path = os.path.join(self.save_dir, name)
+        save_path = os.path.join(self.save_dir, name)
 
         torch.save(optim_or_scheduler.state_dict(), save_path)
-
-        if self.opt.isCloud:
-            self.save_file_to_cloud(os.path.join(self.save_dir, save_path), save_path)
-            os.remove(save_path)
 
     def save_network(self, net, net_name, epoch):
         save_filename = '%s_net_%s.pt' % (epoch, net_name)
@@ -386,18 +348,10 @@ class CycleGan:
         else:
             torch.save(net.cpu().state_dict(), save_path)
 
-        if self.opt.isCloud:
-            self.save_file_to_cloud(os.path.join(self.save_dir, save_path), save_path)
-            os.remove(save_path)
-
-    def save_file_to_cloud(self, file_path_cloud, file_path_local):
-        self.bucket.blob(file_path_cloud).upload_from_filename(file_path_local)
-
-    def get_current_losses(self):
+    def get_current_losses(self) -> dict:
         """Get the Current Losses
 
         :return: Losses
-        :rtype: dict
         """
         if isinstance(self.loss_idt_A, (int, float)):
             idt_loss_A = self.loss_idt_A

@@ -1,24 +1,20 @@
 import os
 import time
-import torch
 import argparse
 from utils import mkdirs
-from torch import distributed
 
 
 class BaseOptions:
     def __init__(self):
         self.isTrain = False
         self.parser = argparse.ArgumentParser(prog='Underwater Image Enhancement',
-                                              description='A very deep application that enhances Underwater Images',
+                                              description='A Deep Learning based application that enhances '
+                                                          'Underwater Images',
                                               formatter_class=argparse.ArgumentDefaultsHelpFormatter)
         self.parser = self.initialized(self.parser)
 
-    def initialized(self, parser):
-        """
-        :param parser:
-        :return:
-        """
+    def initialized(self, parser: argparse.ArgumentParser):
+
         # basic parameters
         parser.add_argument('--job-dir', dest="checkpoints_dir", type=str, default='./checkpoints',
                             help='models are saved here')
@@ -29,6 +25,7 @@ class BaseOptions:
         parser.add_argument('--dataroot', required=True, type=str,
                             help="path to images (should have sub folders trainA, trainB, valA, valB, etc)")
         parser.add_argument('--no_gpu', action='store_true', help='Use only CPU')
+        parser.add_argument('--gpu_hosts', type=list, default=[], help="Hosts list")
 
         # model parameters
         parser.add_argument('--input_nc', default=3, type=int,
@@ -64,10 +61,11 @@ class BaseOptions:
         parser.add_argument('--crop_size', type=int, default=256, help='then crop to this size')
         parser.add_argument('--batch_size', type=int, default=1, help='input batch size')
         parser.add_argument('--num_threads', default=0, type=int, help='# threads for loading data')
-
+        parser.add_argument('--backend', type=str, default=None,
+                            help='backend for distributed training (tcp, gloo on cpu and gloo, nccl on gpu')
         return parser
 
-    def print_options(self, opt):
+    def _print_options(self, opt):
         """Print and save options
 
         It will print both current options and default values(if different).
@@ -100,30 +98,6 @@ class BaseOptions:
         if self.isTrain and opt.name_time:
             opt.name = opt.name + str(int(time.time()))
 
-        # Setup Continue training, if continue training, change the epoch_count with the value of ct
-        if self.isTrain and opt.ct > 0:
-            opt.epoch_count = opt.ct
-
-        # set gpu ids
-        if not opt.no_gpu and torch.cuda.is_available():
-            device_ids = list(range(torch.cuda.device_count()))
-            gpus = len(device_ids)
-            print(f'{gpus} no of GPUs detected. Using GPU: {str(device_ids)}')
-            torch.cuda.set_device(device_ids[0])
-            if distributed.is_available():
-                # print(f"MASTER_ADDR is: {os.environ['MASTER_ADDR']}")
-                # print(f"MASTER_PORT is: {os.environ['MASTER_PORT']}")
-                # print(f"RANK is:{os.environ['RANK']}")
-                # print(f"World Size is: {os.environ['WORLD_SIZE']}")
-                # torch.distributed.init_process_group('nccl', init_method="env://")
-                print("Running on Distributed mode")
-            else:
-                print("Distributed mode is not supported")
-        else:
-            device_ids = []
-            print('No GPU. switching to CPU')
-        opt.gpu_ids = device_ids
-
-        self.print_options(opt)
+        self._print_options(opt)
 
         return opt

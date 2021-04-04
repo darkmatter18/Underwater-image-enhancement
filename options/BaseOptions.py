@@ -25,7 +25,7 @@ class BaseOptions:
         parser.add_argument('--dataroot', required=True, type=str,
                             help="path to images (should have sub folders trainA, trainB, valA, valB, etc)")
         parser.add_argument('--no_gpu', action='store_true', help='Use only CPU')
-        parser.add_argument('--gpu_hosts', type=list, default=[], help="Hosts list")
+        parser.add_argument('--hosts', type=list, default=[], help="Hosts list for distributed training")
 
         # model parameters
         parser.add_argument('--input_nc', default=3, type=int,

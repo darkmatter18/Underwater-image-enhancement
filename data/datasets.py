@@ -6,64 +6,45 @@ from torch.utils.data import Dataset
 import torchvision.transforms as transforms
 
 
-class CustomDataset(Dataset):
+class UWIEDataset(Dataset):
     IMG_EXTENSIONS = [
         '.jpg', '.JPG', '.jpeg', '.JPEG',
         '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP',
         '.tif', '.TIF', '.tiff', '.TIFF',
     ]
 
-    def __init__(self, dataroot: str, phase: str, max_dataset_size: float = float("inf"), direction: str = "AtoB",
-                 input_nc: int = 3, output_nc: int = 3, serial_batches: bool = True,
-                 preprocess: str = 'resize_and_crop', flip: bool = True, load_size: int = 286, crop_size: int = 256,
-                 isCloud: bool = False, bucket_name: str = ''):
+    def __init__(self, dataroot: str, phase: str, serial_batches: bool = True, preprocess: str = 'RRC',
+                 flip: bool = True, load_size: int = 256, crop_size: int = 224):
         """
         Custom Dataset for feeding Image to the network
 
         :param dataroot: Root of the Dataset
         :param phase: Folder phase for Dataset
-        :param max_dataset_size: Max size of the Dataset. Default: inf
-        :param direction: direction of the dataflow ["AtoB" | "BtoA" ]. Default: "AtoB"
-        :param input_nc: number of channels of input Image. Default: 3
-        :param output_nc: number of channels of output Image. Default: 3
         :param serial_batches: Serial Batches for input. Default: 3
         :param preprocess: Type of preprocessing applied. Default: "resize_and_crop"
         :param flip: Is RandomHorizontalFlip is applied or not. Default: True
         :param load_size: Size of the image on load. Default: 286
         :param crop_size: Size of the image after resize. Default: 256
-        :param isCloud: Is the dataset from cloud
-        :param bucket_name: Name of the Cloud Bucket (Applicable, when isCloud is True)
         """
 
         self.dataroot = dataroot
         self.phase = phase
-        self.max_dataset_size = max_dataset_size
-        self.direction = direction
-        self.input_nc = input_nc
-        self.output_nc = output_nc
         self.serial_batches = serial_batches
         self.preprocess = preprocess
         self.flip = flip
         self.load_size = load_size
         self.crop_size = crop_size
-        self.isCloud = isCloud
-        self.bucket_name = bucket_name
 
         self.dir_A = os.path.join(self.dataroot, self.phase + 'A')  # create a path '/path/to/data/trainA'
         self.dir_B = os.path.join(self.dataroot, self.phase + 'B')  # create a path '/path/to/data/trainB'
 
-        self.A_paths = sorted(
-            self.make_dataset(self.dir_A, self.max_dataset_size))  # load images from '/path/to/data/trainA'
-        self.B_paths = sorted(
-            self.make_dataset(self.dir_B, self.max_dataset_size))  # load images from '/path/to/data/trainB'
+        self.A_paths = sorted(self.make_dataset(self.dir_A))  # load images from '/path/to/data/trainA'
+        self.B_paths = sorted(self.make_dataset(self.dir_B))  # load images from '/path/to/data/trainB'
 
         self.A_size = len(self.A_paths)  # get the size of dataset A
         self.B_size = len(self.B_paths)  # get the size of dataset B
-        btoA = self.direction == 'BtoA'
-        input_nc = self.output_nc if btoA else self.input_nc  # get the number of channels of input image
-        output_nc = self.input_nc if btoA else self.output_nc  # get the number of channels of output image
-        self.transform_A = self.get_transform(grayscale=(input_nc == 1))
-        self.transform_B = self.get_transform(grayscale=(output_nc == 1))
+        self.transform_A = self.get_transform()
+        self.transform_B = self.get_transform()
 
     def get_params(self, size):
         w, h = size
@@ -79,40 +60,36 @@ class CustomDataset(Dataset):
 
         return {'crop_pos': (x, y), 'flip': flip}
 
-    def is_image_file(self, filename):
+    def _is_image_file(self, filename):
         return any(filename.endswith(extension) for extension in self.IMG_EXTENSIONS)
 
-    def make_dataset(self, dataset_dir, max_dataset_size=float("inf")):
+    def make_dataset(self, dataset_dir):
         images = []
         assert os.path.isdir(dataset_dir), '%s is not a valid directory' % dataset_dir
 
         for root, _, fnames in sorted(os.walk(dataset_dir)):
             for fname in fnames:
-                if self.is_image_file(fname):
+                if self._is_image_file(fname):
                     path = os.path.join(root, fname)
                     images.append(path)
-        return images[:min(max_dataset_size, len(images))]
+        return images
 
-    def get_transform(self, grayscale=False, convert=True):
+    def get_transform(self):
         transform_list = []
-        if grayscale:
-            transform_list.append(transforms.Grayscale(1))
 
-        if 'resize' in self.preprocess:
+        # Resize And Crop
+        if 'RAC' == self.preprocess:
             transform_list.append(transforms.Resize([self.load_size, self.load_size]))
+            transform_list.append(transforms.CenterCrop(self.crop_size))
 
-        if 'crop' in self.preprocess:
-            transform_list.append(transforms.RandomCrop(self.crop_size))
+        elif 'RRC' == self.preprocess:
+            transform_list.append(transforms.RandomResizedCrop(self.crop_size))
 
         if self.flip:
             transform_list.append(transforms.RandomHorizontalFlip())
 
-        if convert:
-            transform_list += [transforms.ToTensor()]
-            if grayscale:
-                transform_list += [transforms.Normalize((0.5,), (0.5,))]
-            else:
-                transform_list += [transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
+        transform_list += [transforms.ToTensor()]
+        transform_list += [transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
         return transforms.Compose(transform_list)
 
     def __getitem__(self, index):

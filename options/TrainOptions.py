@@ -8,7 +8,7 @@ class TrainOptions(BaseOptions):
 
     def initialized(self, parser):
         parser = BaseOptions.initialized(self, parser)
-
+        # TODO: REFACTOR NEEDED
         # Training Stats params
         parser.add_argument('--print_freq', type=int, default=100,
                             help='frequency of showing training results on console')

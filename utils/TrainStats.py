@@ -3,7 +3,6 @@ import time
 import pickle
 from . import tensor2im
 from PIL import Image
-from . import setup_cloud_bucket
 
 
 class TrainStats:
@@ -35,6 +34,7 @@ class TrainStats:
     def save_file_to_cloud(self, file_path_cloud, file_path_local):
         self.bucket.blob(file_path_cloud).upload_from_filename(file_path_local)
 
+    # TODO: UPDATE NEEDED
     def print_current_losses(self, epoch, iters, losses, t_comp, t_data):
         """print current losses on console; also save the losses to the disk
 

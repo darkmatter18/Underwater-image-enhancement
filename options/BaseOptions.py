@@ -24,7 +24,7 @@ class BaseOptions:
         parser.add_argument('--name_time', action='store_true', help='Add Timestamp after name')
         parser.add_argument('--dataroot', required=True, type=str,
                             help="path to images (should have sub folders trainA, trainB, valA, valB, etc)")
-        parser.add_argument('--no_gpu', action='store_true', help='Use only CPU')
+        parser.add_argument('--num_gpus', type=int, default=0, help="Number of GPUS for training")
         parser.add_argument('--hosts', type=list, default=[], help="Hosts list for distributed training")
 
         # model parameters
@@ -47,14 +47,11 @@ class BaseOptions:
         parser.add_argument('--no_dropout', action='store_true', help='no dropout for the generator')
 
         # dataset parameters
-        parser.add_argument('--max_dataset_size', default=float('inf'), type=float,
-                            help='Maximum number of samples allowed per dataset. If the dataset directory contains '
-                                 'more than max_dataset_size, only a subset is loaded.')
-        parser.add_argument('--direction', default="AtoB", type=str, help='AtoB or BtoA')
         parser.add_argument('--serial_batches', action='store_true',
                             help='if true, takes images in order to make batches, otherwise takes them randomly')
-        parser.add_argument('--preprocess', type=str, default='resize_and_crop',
-                            help='scaling and cropping of images at load time [resize_and_crop | crop | none]')
+        parser.add_argument('--preprocess', type=str, required=True,
+                            help='scaling and cropping of images at load time '
+                                 '[RRC (RandomResizedCrop) | RAC(Resize and Crop)] Use RRC on training, RAC on testing')
         parser.add_argument('--no_flip', action='store_true',
                             help='if specified, do flip the images for data augmentation')
         parser.add_argument('--load_size', type=int, default=286, help='scale images to this size')
@@ -97,6 +94,9 @@ class BaseOptions:
         # Add Time stamp in the name
         if self.isTrain and opt.name_time:
             opt.name = opt.name + str(int(time.time()))
+
+        opt.is_distributed = len(opt.hosts) > 1 and opt.backend is not None
+        opt.use_cuda = opt.num_gpus > 0
 
         self._print_options(opt)
 

@@ -1,6 +1,9 @@
-import os
-import time
 import argparse
+import os
+
+import time
+import torch
+
 from utils import mkdirs
 
 
@@ -97,6 +100,7 @@ class BaseOptions:
 
         opt.is_distributed = len(opt.hosts) > 1 and opt.backend is not None
         opt.use_cuda = opt.num_gpus > 0
+        opt.device = torch.device("cuda" if opt.use_cuda else "cpu")
 
         self._print_options(opt)
 

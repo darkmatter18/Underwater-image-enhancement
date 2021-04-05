@@ -1,11 +1,32 @@
+import os
+
 import time
+import torch
+from torch import distributed
+
 from data import create_dataset
 from model.CycleGan import CycleGan
 from options.TrainOptions import TrainOptions
 from utils.TrainStats import TrainStats
+from utils.setup_cloud import setup_cloud
 
 if __name__ == '__main__':
     opt = TrainOptions().parse()
+
+    opt = setup_cloud(opt)
+
+
+    #
+    # kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
+    #
+    # device = torch.device("cuda" if use_cuda else "cpu")
+    # if is_distributed:
+    #     # Initialize the distributed environment.
+    #     world_size = len(opt.hosts)
+    #     os.environ['WORLD_SIZE'] = str(world_size)
+    #     host_rank = opt.hosts.index(opt.current_host)
+    #     os.environ['RANK'] = str(host_rank)
+    #     distributed.init_process_group(backend=opt.backend, init_method="env://")
 
     dataset = create_dataset(opt)
     dataset_size = len(dataset)

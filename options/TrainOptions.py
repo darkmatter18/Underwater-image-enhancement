@@ -9,19 +9,19 @@ class TrainOptions(BaseOptions):
     def initialized(self, parser):
         parser = BaseOptions.initialized(self, parser)
         # Training Stats params
-        parser.add_argument('--display_print_freq', type=int, default=1,
-                            help='frequency of showing training results (images and logs) on console')
+        parser.add_argument('--visuals_freq', type=int, default=1,
+                            help='frequency of showing and saving training results (images and logs) on console')
+        parser.add_argument('--artifact_freq', type=int, default=1,
+                            help='frequency of saving model artifacts at the end of epochs')
 
         # network saving and loading parameters
         parser.add_argument('--phase', type=str, default='train', help='train, val, test, etc')
-        parser.add_argument('--ct', type=int, default=0, help='Adding continue training. '
-                                                              'The value is the epoch no, which the model will start '
-                                                              'training from, and loads the model from.')
+        # parser.add_argument('--ct', type=int, default=0, help='Adding continue training. '
+        #                                                       'The value is the epoch no, which the model will start '
+        #                                                       'training from, and loads the model from.')
         parser.add_argument('--epoch_count', type=int, default=1,
                             help='the starting epoch count, '
                                  'we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>,')
-        parser.add_argument('--save_epoch_freq', type=int, default=1,
-                            help='frequency of saving checkpoints at the end of epochs')
 
         # Training Parameters
         parser.add_argument('--n_epochs', type=int, default=100, help='number of epochs with the initial learning rate')

@@ -37,31 +37,35 @@ if __name__ == '__main__':
 
     # Training
     for epoch in range(opt.epoch_count, opt.n_epochs + opt.n_epochs_decay + 1):
-        epoch_start_time = time.time()
-
-        model.train()
         print(f"Training {epoch}/{opt.n_epochs + opt.n_epochs_decay + 1}")
+
         # Training
+        epoch_start_time = time.time()
+        model.train()
         for i, data in enumerate(dataset):
             model.feed_input(data)
             model.optimize_parameters()
 
         training_end_time = time.time()
+        # Training block ends
 
         # Evaluation
         model.eval()
         t_data = training_end_time - epoch_start_time  # Training Time
         t_comp = t_data / opt.batch_size  # Single input time
 
-        if epoch % opt.display_print_freq == 0:
+        # Save model generated images and losses
+        if epoch % opt.visuals_freq == 0:
             print(f"Saving Visuals (epoch: {epoch})")
             stats.save_current_visuals(model.get_current_visuals(), f'img-{epoch}')
             stats.print_current_losses(epoch, model.get_current_losses(), t_comp, t_data)
 
-        if epoch % opt.save_epoch_freq == 0:
+        # Save model artifacts
+        if epoch % opt.artifact_freq == 0:
             print(f'saving the model at the end of epoch {epoch}')
             model.save_networks(str(epoch))
             model.save_optimizers_and_scheduler(str(epoch))
+        # Evaluation block ends
 
         print(f'End of epoch {epoch} / {opt.n_epochs + opt.n_epochs_decay} \t '
               f'Time Taken: {time.time() - epoch_start_time} sec')

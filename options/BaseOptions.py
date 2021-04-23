@@ -19,22 +19,18 @@ class BaseOptions:
     def initialized(self, parser: argparse.ArgumentParser):
 
         # basic parameters
-        parser.add_argument('--job-dir', dest="checkpoints_dir", type=str, default='./checkpoints',
-                            help='models are saved here')
+        # parser.add_argument('--job-dir', dest="checkpoints_dir", type=str, default='./checkpoints',
+        #                     help='models are saved here')
         parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')
         parser.add_argument('--name', type=str, default='uwie',
                             help='name of the experiment. It decides where to store samples and models')
         parser.add_argument('--name_time', action='store_true', help='Add Timestamp after name')
         parser.add_argument('--dataroot', required=True, type=str,
-                            help="path to images (should have sub folders trainA, trainB, valA, valB, etc)")
-        parser.add_argument('--num_gpus', type=int, default=0, help="Number of GPUS for training")
-        parser.add_argument('--hosts', type=list, default=[], help="Hosts list for distributed training")
+                            help="ROOT of the image dataset (should have sub folders trainA, trainB, valA, valB, etc)")
+        # parser.add_argument('--num_gpus', type=int, default=0, help="Number of GPUS for training")
+        # parser.add_argument('--hosts', type=list, default=[], help="Hosts list for distributed training")
 
         # model parameters
-        parser.add_argument('--input_nc', default=3, type=int,
-                            help='# of input image channels: 3 for RGB and 1 for grayscale')
-        parser.add_argument('--output_nc', type=int, default=3,
-                            help='# of output image channels: 3 for RGB and 1 for grayscale')
         parser.add_argument('--ngf', type=int, default=64, help='# of gen filters in the last conv layer')
         parser.add_argument('--ndf', type=int, default=64, help='# of discrim filters in the first conv layer')
         parser.add_argument('--n_layers_D', type=int, default=3, help='only used if netD==n_layers')
@@ -60,9 +56,10 @@ class BaseOptions:
         parser.add_argument('--load_size', type=int, default=286, help='scale images to this size')
         parser.add_argument('--crop_size', type=int, default=256, help='then crop to this size')
         parser.add_argument('--batch_size', type=int, default=1, help='input batch size')
-        parser.add_argument('--num_threads', default=0, type=int, help='# threads for loading data')
-        parser.add_argument('--backend', type=str, default=None,
-                            help='backend for distributed training (tcp, gloo on cpu and gloo, nccl on gpu')
+
+        # parser.add_argument('--num_threads', default=0, type=int, help='# threads for loading data')
+        # parser.add_argument('--backend', type=str, default=None,
+        #                     help='backend for distributed training (tcp, gloo on cpu and gloo, nccl on gpu')
         return parser
 
     def _print_options(self, opt):
@@ -98,9 +95,9 @@ class BaseOptions:
         if self.isTrain and opt.name_time:
             opt.name = opt.name + str(int(time.time()))
 
-        opt.is_distributed = len(opt.hosts) > 1 and opt.backend is not None
-        opt.use_cuda = opt.num_gpus > 0
-        opt.device = torch.device("cuda" if opt.use_cuda else "cpu")
+        # opt.is_distributed = len(opt.hosts) > 1 and opt.backend is not None
+        # opt.use_cuda = opt.num_gpus > 0
+        # opt.device = torch.device("cuda" if opt.use_cuda else "cpu")
 
         self._print_options(opt)
 

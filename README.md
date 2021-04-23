@@ -16,3 +16,7 @@ python -m trainer.test --dataroot "../Dataset/EUVP Dataset/Paired/underwater_dar
 
 - Create a PPT about matrices
 - Create a metric table
+
+## Notes
+1. Inside `model` model files should have the name `models/[model_name]_model.py`, 
+   different models can be imported by the `model` opt

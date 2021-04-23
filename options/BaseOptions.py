@@ -25,6 +25,7 @@ class BaseOptions:
         parser.add_argument('--name', type=str, default='uwie',
                             help='name of the experiment. It decides where to store samples and models')
         parser.add_argument('--name_time', action='store_true', help='Add Timestamp after name')
+        parser.add_argument('--model', type=str, required=True, help='Name of the model')
         parser.add_argument('--dataroot', required=True, type=str,
                             help="ROOT of the image dataset (should have sub folders trainA, trainB, valA, valB, etc)")
         # parser.add_argument('--num_gpus', type=int, default=0, help="Number of GPUS for training")

@@ -5,7 +5,7 @@ import torch
 from torch import distributed
 
 from data import create_dataset
-from model.CycleGan import CycleGan
+from model import create_model
 from options.TrainOptions import TrainOptions
 from utils.TrainStats import TrainStats
 from utils.setup_cloud import setup_cloud
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     dataset_size = len(dataset)
     print('The number of training images = %d' % dataset_size)
 
-    model = CycleGan(opt)
+    model = create_model(opt)
     stats = TrainStats(opt)
 
     # Training

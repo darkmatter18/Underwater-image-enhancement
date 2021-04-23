@@ -1,6 +1,6 @@
 from options.TestOptions import TestOptions
 from data import create_dataset
-from model.CycleGan import CycleGan
+from model import create_model
 from utils.TestVisualizer import TestVisualizer
 
 
@@ -19,7 +19,7 @@ def main():
     dataset = create_dataset(opt)
 
     # setup Gan
-    cycleGan = CycleGan(opt)
+    cycleGan = create_model(opt)
     cycleGan.load_networks(opt.load_model)
 
     dataset_iter = iter(dataset)

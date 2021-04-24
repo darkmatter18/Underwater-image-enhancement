@@ -2,10 +2,10 @@ import argparse
 import os
 
 import time
-import torch
+
 
 from utils import mkdirs
-
+from utils.SaveObjects import SaveObject
 
 class BaseOptions:
     def __init__(self):
@@ -61,6 +61,9 @@ class BaseOptions:
         # parser.add_argument('--num_threads', default=0, type=int, help='# threads for loading data')
         # parser.add_argument('--backend', type=str, default=None,
         #                     help='backend for distributed training (tcp, gloo on cpu and gloo, nccl on gpu')
+
+        # Cloud parameter
+        parser.add_argument('--cloud', default='none', type=str, help="Name of the cloud provider [aws | gcp | none]")
         return parser
 
     def _print_options(self, opt):
@@ -100,6 +103,7 @@ class BaseOptions:
         # opt.use_cuda = opt.num_gpus > 0
         # opt.device = torch.device("cuda" if opt.use_cuda else "cpu")
 
+        opt.save = SaveObject(opt)
         self._print_options(opt)
 
         return opt

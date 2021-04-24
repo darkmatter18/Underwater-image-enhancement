@@ -1,5 +1,5 @@
-from .datasets import UWIEDataset
 from .dataloaders import UWIEDataloader
+from .datasets import UWIEDataset
 
 
 def create_dataset(opt):

@@ -1,9 +1,10 @@
 import os
 import random
+
 import numpy as np
+import torchvision.transforms as transforms
 from PIL import Image
 from torch.utils.data import Dataset
-import torchvision.transforms as transforms
 
 
 class UWIEDataset(Dataset):

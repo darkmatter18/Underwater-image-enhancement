@@ -103,7 +103,6 @@ class BaseOptions:
         # opt.use_cuda = opt.num_gpus > 0
         # opt.device = torch.device("cuda" if opt.use_cuda else "cpu")
 
-        opt.save = SaveObject(opt)
         self._print_options(opt)
 
         return opt

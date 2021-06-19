@@ -3,8 +3,7 @@ from .datasets import UWIEDataset
 
 
 def create_dataset(dataroot: str, phase: str, serial_batches: bool, preprocess: str, no_flip: bool, load_size: int,
-                   crop_size: int, batch_size: int, num_threads: int,
-                   is_distributed: bool, use_cuda: bool):
+                   crop_size: int, batch_size: int, num_threads: int, is_distributed: bool, use_cuda: bool):
     """Create a Dataset using opt
 
     :param use_cuda: Whether using CUDA or not

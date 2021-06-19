@@ -12,10 +12,7 @@ from utils.setup_cloud import setup_cloud
 
 if __name__ == '__main__':
     opt = TrainOptions().parse()
-
     opt = setup_cloud(opt)
-
-
     #
     # kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
     #
@@ -28,7 +25,11 @@ if __name__ == '__main__':
     #     os.environ['RANK'] = str(host_rank)
     #     distributed.init_process_group(backend=opt.backend, init_method="env://")
 
-    dataset = create_dataset(opt)
+    dataset = create_dataset(dataroot=opt.dataroot, phase=opt.phase, serial_batches=opt.serial_batches,
+                             preprocess=opt.preprocess, no_flip=opt.no_flip, load_size=opt.load_size,
+                             crop_size=opt.crop_size, batch_size=opt.batch_size, num_threads=opt.num_threads,
+                             is_distributed=opt.is_distributed, use_cuda=opt.use_cuda)
+
     dataset_size = len(dataset)
     print('The number of training images = %d' % dataset_size)
 

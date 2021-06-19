@@ -1,8 +1,4 @@
-import os
-
 import time
-import torch
-from torch import distributed
 
 from data import create_dataset
 from model import create_model
@@ -13,19 +9,8 @@ from utils.setup_cloud import setup_cloud
 if __name__ == '__main__':
     opt = TrainOptions().parse()
     opt = setup_cloud(opt)
-    #
-    # kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
-    #
-    # device = torch.device("cuda" if use_cuda else "cpu")
-    # if is_distributed:
-    #     # Initialize the distributed environment.
-    #     world_size = len(opt.hosts)
-    #     os.environ['WORLD_SIZE'] = str(world_size)
-    #     host_rank = opt.hosts.index(opt.current_host)
-    #     os.environ['RANK'] = str(host_rank)
-    #     distributed.init_process_group(backend=opt.backend, init_method="env://")
 
-    dataset = create_dataset(dataroot=opt.dataroot, phase=opt.phase, serial_batches=opt.serial_batches,
+    dataset = create_dataset(dataroot=opt.training_data_dir, serial_batches=opt.serial_batches,
                              preprocess=opt.preprocess, no_flip=opt.no_flip, load_size=opt.load_size,
                              crop_size=opt.crop_size, batch_size=opt.batch_size, num_threads=opt.num_threads,
                              is_distributed=opt.is_distributed, use_cuda=opt.use_cuda)

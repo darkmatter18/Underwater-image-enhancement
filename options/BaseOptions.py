@@ -53,6 +53,7 @@ class BaseOptions:
         parser.add_argument('--crop_size', type=int, default=256, help='then crop to this size')
         parser.add_argument('--batch-size', type=int, default=1, help='input batch size')
 
+        # Used By AWS
         parser.add_argument('--hosts', type=list, default=os.getenv("SM_HOSTS", []),
                             help="Hosts list for distributed training")
         parser.add_argument('--current-host', type=str, default=os.getenv("SM_CURRENT_HOST", ""),
@@ -64,6 +65,7 @@ class BaseOptions:
                             help='backend for distributed training (tcp, gloo on cpu and gloo, nccl on gpu')
         parser.add_argument("--model-dir", type=str, default=os.getenv("SM_MODEL_DIR"),
                             help="Model artifact saving dir")
+        parser.add_argument('--output-data-dir', type=str, default=os.environ['SM_OUTPUT_DATA_DIR'])
         # Cloud parameter
         parser.add_argument('--cloud', default='aws', type=str, help="Name of the cloud provider [aws | gcp | none]")
         return parser

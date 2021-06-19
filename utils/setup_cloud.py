@@ -8,9 +8,6 @@ def setup_cloud(opt):
         # logger.debug("Distributed training - {}".format(is_distributed))
         use_cuda = opt.num_gpus > 0
         # logger.debug("Number of gpus available - {}".format(args.num_gpus))
-        num_workers = 1 if use_cuda else 0
-        pin_memory = use_cuda
-        # device = torch.device("cuda" if use_cuda else "cpu")
 
         if is_distributed:
             # Initialize the distributed environment.
@@ -22,13 +19,9 @@ def setup_cloud(opt):
 
         opt.is_distributed = is_distributed
         opt.use_cuda = use_cuda
-        opt.num_workers = num_workers
-        opt.pin_memory = pin_memory
         return opt
 
     else:
         opt.is_distributed = False
         opt.use_cuda = False
-        opt.num_workers = 0
-        opt.pin_memory = False
         return opt

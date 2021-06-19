@@ -1,3 +1,4 @@
+import os
 from .BaseOptions import BaseOptions
 
 
@@ -15,10 +16,9 @@ class TrainOptions(BaseOptions):
                             help='frequency of saving model artifacts at the end of epochs')
 
         # network saving and loading parameters
-        parser.add_argument('--phase', type=str, default='train', help='train, val, test, etc')
-        # parser.add_argument('--ct', type=int, default=0, help='Adding continue training. '
-        #                                                       'The value is the epoch no, which the model will start '
-        #                                                       'training from, and loads the model from.')
+        parser.add_argument('--training-data-dir', type=str, default=os.getenv("SM_CHANNEL_TRAINING"),
+                            help="Training data directory")
+
         parser.add_argument('--epoch_count', type=int, default=1,
                             help='the starting epoch count, '
                                  'we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>,')

@@ -3,9 +3,8 @@ import os
 
 import time
 
-
 from utils import mkdirs
-from utils.SaveObjects import SaveObject
+
 
 class BaseOptions:
     def __init__(self):
@@ -19,8 +18,6 @@ class BaseOptions:
     def initialized(self, parser: argparse.ArgumentParser):
 
         # basic parameters
-        # parser.add_argument('--job-dir', dest="checkpoints_dir", type=str, default='./checkpoints',
-        #                     help='models are saved here')
         parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')
         parser.add_argument('--name', type=str, default='uwie',
                             help='name of the experiment. It decides where to store samples and models')
@@ -28,8 +25,6 @@ class BaseOptions:
         parser.add_argument('--model', type=str, required=True, help='Name of the model')
         parser.add_argument('--dataroot', required=True, type=str,
                             help="ROOT of the image dataset (should have sub folders trainA, trainB, valA, valB, etc)")
-        # parser.add_argument('--num_gpus', type=int, default=0, help="Number of GPUS for training")
-        # parser.add_argument('--hosts', type=list, default=[], help="Hosts list for distributed training")
 
         # model parameters
         parser.add_argument('--ngf', type=int, default=64, help='# of gen filters in the last conv layer')
@@ -56,14 +51,21 @@ class BaseOptions:
                             help='if specified, do flip the images for data augmentation')
         parser.add_argument('--load_size', type=int, default=286, help='scale images to this size')
         parser.add_argument('--crop_size', type=int, default=256, help='then crop to this size')
-        parser.add_argument('--batch_size', type=int, default=1, help='input batch size')
+        parser.add_argument('--batch-size', type=int, default=1, help='input batch size')
 
-        # parser.add_argument('--num_threads', default=0, type=int, help='# threads for loading data')
-        # parser.add_argument('--backend', type=str, default=None,
-        #                     help='backend for distributed training (tcp, gloo on cpu and gloo, nccl on gpu')
+        parser.add_argument('--hosts', type=list, default=os.getenv("SM_HOSTS", []),
+                            help="Hosts list for distributed training")
+        parser.add_argument('--current-host', type=str, default=os.getenv("SM_CURRENT_HOST", ""),
+                            help="Setup the current Host")
+        parser.add_argument('--num_gpus', type=int, default=os.getenv("SM_NUM_GPUS", 0),
+                            help="Number of GPUS for training")
+
+        parser.add_argument('--num_threads', default=0, type=int, help='# threads for loading data')
+        parser.add_argument('--backend', type=str, default=None,
+                            help='backend for distributed training (tcp, gloo on cpu and gloo, nccl on gpu')
 
         # Cloud parameter
-        parser.add_argument('--cloud', default='none', type=str, help="Name of the cloud provider [aws | gcp | none]")
+        parser.add_argument('--cloud', default='aws', type=str, help="Name of the cloud provider [aws | gcp | none]")
         return parser
 
     def _print_options(self, opt):

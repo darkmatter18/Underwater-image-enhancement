@@ -31,7 +31,7 @@ class UWIEDataloader:
         self.dataloader = DataLoader(
             self.dataset,
             batch_size=batch_size,
-            shuffle=not serial_batches,
+            shuffle=train_sampler is None,
             sampler=train_sampler,
             num_workers=int(num_threads),
             **kwargs)

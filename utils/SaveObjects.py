@@ -15,6 +15,14 @@ class SaveObject:
         else:
             raise RuntimeError('Save provider can be only aws sagemaker')
 
+    def save_optim_scheduler(self, optim_or_s, name):
+        if self.provider == "aws":
+            path = os.path.join(self.opt.model_dir, name)
+            # recommended way from http://pytorch.org/docs/master/notes/serialization.html
+            torch.save(optim_or_s.state_dict(), path)
+        else:
+            raise RuntimeError('Save provider can be only aws sagemaker')
+
     def save_file(self):
         pass
 

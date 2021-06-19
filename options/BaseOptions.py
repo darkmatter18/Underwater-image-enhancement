@@ -60,10 +60,10 @@ class BaseOptions:
         parser.add_argument('--num_gpus', type=int, default=os.getenv("SM_NUM_GPUS", 0),
                             help="Number of GPUS for training")
 
-        parser.add_argument('--num_threads', default=0, type=int, help='# threads for loading data')
         parser.add_argument('--backend', type=str, default=None,
                             help='backend for distributed training (tcp, gloo on cpu and gloo, nccl on gpu')
-
+        parser.add_argument("--model-dir", type=str, default=os.getenv("SM_MODEL_DIR"),
+                            help="Model artifact saving dir")
         # Cloud parameter
         parser.add_argument('--cloud', default='aws', type=str, help="Name of the cloud provider [aws | gcp | none]")
         return parser

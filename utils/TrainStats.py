@@ -17,7 +17,7 @@ class TrainStats:
 
         lss = os.path.join(self.log_loss_dir, self.log_file_name)
 
-        with open(lss, "a") as log_file:
+        with open(lss, "w+") as log_file:
             now = time.strftime("%c")
             log_file.write('================ Training Loss (%s) ================\n' % now)
 

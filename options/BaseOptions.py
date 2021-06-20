@@ -1,5 +1,6 @@
 import argparse
 import os
+import json
 
 import time
 
@@ -54,7 +55,7 @@ class BaseOptions:
         parser.add_argument('--batch-size', type=int, default=1, help='input batch size')
 
         # Used By AWS
-        parser.add_argument('--hosts', type=list, default=os.getenv("SM_HOSTS", []),
+        parser.add_argument('--hosts', type=list, default=json.loads(os.getenv("SM_HOSTS", "")),
                             help="Hosts list for distributed training")
         parser.add_argument('--current-host', type=str, default=os.getenv("SM_CURRENT_HOST", ""),
                             help="Setup the current Host")

@@ -14,12 +14,13 @@ class UWIEDataset(Dataset):
         '.tif', '.TIF', '.tiff', '.TIFF',
     ]
 
-    def __init__(self, dataroot: str, serial_batches: bool = True, preprocess: str = 'RRC',
+    def __init__(self, dataroot: str, phase: str, serial_batches: bool = True, preprocess: str = 'RRC',
                  flip: bool = True, load_size: int = 256, crop_size: int = 224):
         """
         Custom Dataset for feeding Image to the network
 
         :param dataroot: Root of the Dataset
+        :param phase: Folder phase for Dataset
         :param serial_batches: Serial Batches for input. Default: 3
         :param preprocess: Type of preprocessing applied. Default: "resize_and_crop"
         :param flip: Is RandomHorizontalFlip is applied or not. Default: True
@@ -28,14 +29,15 @@ class UWIEDataset(Dataset):
         """
 
         self.dataroot = dataroot
+        self.phase = phase
         self.serial_batches = serial_batches
         self.preprocess = preprocess
         self.flip = flip
         self.load_size = load_size
         self.crop_size = crop_size
 
-        self.dir_A = self.dataroot + 'A'  # create a path '/path/to/data/trainA'
-        self.dir_B = self.dataroot + 'B'  # create a path '/path/to/data/trainB'
+        self.dir_A = os.path.join(self.dataroot, self.phase + 'A')  # create a path '/path/to/data/trainA'
+        self.dir_B = os.path.join(self.dataroot, self.phase + 'B')  # create a path '/path/to/data/trainB'
 
         self.A_paths = sorted(self.make_dataset(self.dir_A))  # load images from '/path/to/data/trainA'
         self.B_paths = sorted(self.make_dataset(self.dir_B))  # load images from '/path/to/data/trainB'

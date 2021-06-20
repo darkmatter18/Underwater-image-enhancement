@@ -10,6 +10,7 @@ class TestOptions(BaseOptions):
     def initialized(self, parser):
         parser = BaseOptions.initialized(self, parser)
 
+        parser.add_argument('--phase', type=str, default='test')
         parser.add_argument('--training-data-dir', type=str, default=os.getenv("SM_CHANNEL_TRAINING"),
                             help="Training data directory")
         parser.add_argument('--load_model', type=str, default='latest', help="name of the models to load")

@@ -16,7 +16,10 @@ def main():
     viz = TestVisualizer(opt)
 
     # Dataset
-    dataset = create_dataset(opt)
+    dataset = create_dataset(dataroot=opt.training_data_dir, serial_batches=opt.serial_batches,
+                             preprocess=opt.preprocess, no_flip=opt.no_flip, load_size=opt.load_size,
+                             crop_size=opt.crop_size, batch_size=opt.batch_size, num_threads=opt.num_threads,
+                             is_distributed=opt.is_distributed, use_cuda=opt.use_cuda)
 
     # setup Gan
     cycleGan = create_model(opt)

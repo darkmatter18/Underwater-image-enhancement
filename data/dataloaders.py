@@ -6,15 +6,13 @@ from torch.utils.data.distributed import DistributedSampler
 class UWIEDataloader:
     """Wrapper class of Dataset class that performs multi-threaded data loading"""
 
-    def __init__(self, torch_dataset: Dataset, batch_size: int = 1, num_threads: int = 0, serial_batches=True,
-                 is_distributed: bool = False, use_cuda: bool = False):
+    def __init__(self, torch_dataset: Dataset, batch_size: int = 1, is_distributed: bool = False,
+                 use_cuda: bool = False):
         """
         Custom Dataloader Function
 
         :param torch_dataset: Torch dataset
         :param batch_size: no of examples per batch. Default: 1
-        :param num_threads: number of workers for multiprocessing. Default: 0
-        :param serial_batches: Whether the dataset has serial_batches or not. Default: True
         :param is_distributed: Whether distributed training is using or not. Default: False
         :param use_cuda: Whether using cuda training is using or not. Default: False
         """
@@ -33,7 +31,6 @@ class UWIEDataloader:
             batch_size=batch_size,
             shuffle=train_sampler is None,
             sampler=train_sampler,
-            num_workers=int(num_threads),
             **kwargs)
 
     def load_data(self):

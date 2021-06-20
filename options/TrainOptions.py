@@ -10,7 +10,7 @@ class TrainOptions(BaseOptions):
     def initialized(self, parser):
         parser = BaseOptions.initialized(self, parser)
         # Training Stats params
-        parser.add_argument('--phase', type=str, default='train')
+
         parser.add_argument('--visuals_freq', type=int, default=1,
                             help='frequency of showing and saving training results (images and logs) on console')
         parser.add_argument('--artifact_freq', type=int, default=1,
@@ -19,6 +19,8 @@ class TrainOptions(BaseOptions):
         # network saving and loading parameters
         parser.add_argument('--training-data-dir', type=str, default=os.getenv("SM_CHANNEL_TRAINING"),
                             help="Training data directory")
+        parser.add_argument('--subdir', type=str, default="underwater_dark")
+        parser.add_argument('--phase', type=str, default='train')
 
         parser.add_argument('--epoch_count', type=int, default=1,
                             help='the starting epoch count, '

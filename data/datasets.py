@@ -14,7 +14,7 @@ class UWIEDataset(Dataset):
         '.tif', '.TIF', '.tiff', '.TIFF',
     ]
 
-    def __init__(self, dataroot: str, phase: str, serial_batches: bool = True, preprocess: str = 'RRC',
+    def __init__(self, dataroot: str, subdir: str, phase: str, serial_batches: bool = True, preprocess: str = 'RRC',
                  flip: bool = True, load_size: int = 256, crop_size: int = 224):
         """
         Custom Dataset for feeding Image to the network
@@ -29,6 +29,7 @@ class UWIEDataset(Dataset):
         """
 
         self.dataroot = dataroot
+        self.subdir = subdir
         self.phase = phase
         self.serial_batches = serial_batches
         self.preprocess = preprocess
@@ -36,8 +37,8 @@ class UWIEDataset(Dataset):
         self.load_size = load_size
         self.crop_size = crop_size
 
-        self.dir_A = os.path.join(self.dataroot, self.phase + 'A')  # create a path '/path/to/data/trainA'
-        self.dir_B = os.path.join(self.dataroot, self.phase + 'B')  # create a path '/path/to/data/trainB'
+        self.dir_A = os.path.join(self.dataroot, self.subdir, self.phase + 'A')  # create a path '/path/to/data/trainA'
+        self.dir_B = os.path.join(self.dataroot, self.subdir, self.phase + 'B')  # create a path '/path/to/data/trainB'
 
         self.A_paths = sorted(self.make_dataset(self.dir_A))  # load images from '/path/to/data/trainA'
         self.B_paths = sorted(self.make_dataset(self.dir_B))  # load images from '/path/to/data/trainB'

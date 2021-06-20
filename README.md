@@ -1,5 +1,38 @@
 # Underwater Image Enhancement
 
+## Training Options
+```bash
+Underwater Image Enhancement [-h] [--checkpoints_dir CHECKPOINTS_DIR]
+                                    [--name NAME] [--name_time] --model MODEL
+                                    --dataroot DATAROOT [--ngf NGF]
+                                    [--ndf NDF] [--n_layers_D N_LAYERS_D]
+                                    [--n_blocks_G N_BLOCKS_G] [--no_dropout]
+                                    [--serial_batches] --preprocess PREPROCESS
+                                    [--no_flip] [--load_size LOAD_SIZE]
+                                    [--crop_size CROP_SIZE]
+                                    [--batch-size BATCH_SIZE] [--hosts HOSTS]
+                                    [--current-host CURRENT_HOST]
+                                    [--num_gpus NUM_GPUS] [--backend BACKEND]
+                                    [--model-dir MODEL_DIR]
+                                    [--output-data-dir OUTPUT_DATA_DIR]
+                                    [--cloud CLOUD]
+                                    [--visuals_freq VISUALS_FREQ]
+                                    [--artifact_freq ARTIFACT_FREQ]
+                                    [--training-data-dir TRAINING_DATA_DIR]
+                                    [--subdir SUBDIR] [--phase PHASE]
+                                    [--epoch_count EPOCH_COUNT]
+                                    [--n_epochs N_EPOCHS]
+                                    [--n_epochs_decay N_EPOCHS_DECAY]
+                                    [--beta1 BETA1] [--lr LR]
+                                    [--gan_mode GAN_MODE]
+                                    [--pool_size POOL_SIZE]
+                                    [--lr_policy LR_POLICY]
+                                    [--lr_decay_iters LR_DECAY_ITERS]
+                                    [--lambda_A LAMBDA_A]
+                                    [--lambda_B LAMBDA_B]
+                                    [--lambda_identity LAMBDA_IDENTITY]
+```
+
 ## Running Test
 ```bash
 python -m trainer.test --dataroot "../Dataset/EUVP Dataset/Paired/underwater_dark" --no_gpu --load_model 136

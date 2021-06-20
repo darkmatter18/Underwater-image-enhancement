@@ -27,6 +27,7 @@ class BaseOptions:
         # parser.add_argument('--dataroot', required=True, type=str,
         #                     help="ROOT of the image dataset (should have sub folders trainA, trainB, valA, valB, etc)
         #                     ")
+        parser.add_argument('--direction', type=str, default="AtoB")
 
         # model parameters
         parser.add_argument('--ngf', type=int, default=64, help='# of gen filters in the last conv layer')

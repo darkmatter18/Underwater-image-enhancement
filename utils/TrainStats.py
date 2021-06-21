@@ -1,7 +1,7 @@
 import os
 import time
 import pickle
-from . import tensor2im
+from . import tensor2im, mkdirs
 from PIL import Image
 
 
@@ -16,7 +16,8 @@ class TrainStats:
                        'loss_G_BtoA': [], 'cycle_loss_A': [], 'cycle_loss_B': []}
 
         lss = os.path.join(self.log_loss_dir, self.log_file_name)
-
+        
+        mkdirs(self.img_dir)
         with open(lss, "w+") as log_file:
             now = time.strftime("%c")
             log_file.write('================ Training Loss (%s) ================\n' % now)

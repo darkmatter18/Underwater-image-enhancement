@@ -1,5 +1,4 @@
 import time
-
 from data import create_dataset
 from model import create_model
 from options.TrainOptions import TrainOptions
@@ -20,6 +19,7 @@ if __name__ == '__main__':
 
     model = create_model(opt)
     stats = TrainStats(opt)
+    
 
     # Training
     for epoch in range(opt.epoch_count, opt.n_epochs + opt.n_epochs_decay + 1):

@@ -37,7 +37,7 @@ class TrainStats:
         message = '(epoch: %d, time: %.3f, data: %.3f) ' % (epoch, t_comp, t_data)
         for k, v in losses.items():
             self.losses[k].append(v)
-            message += '%s: %.3f ' % (k, v)
+            message += '%s=%.3f; ' % (k, v)
 
         lss = os.path.join(self.log_loss_dir, self.log_file_name)
         liss = os.path.join(self.log_loss_dir, self.loss_file_name)

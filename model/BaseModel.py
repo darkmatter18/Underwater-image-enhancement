@@ -64,7 +64,7 @@ class BaseModel(ABC):
         model = model.to(self.device)
         if self.is_distributed and self.use_cuda:
             # multi-machine multi-gpu case
-            return torch.nn.parallel.DistributedDataParallel(model)
+            return torch.nn.parallel.DistributedDataParallel(model, broadcast_buffers=False)
         else:
             # single-machine multi-gpu case or single-machine or multi-machine cpu case
             return torch.nn.DataParallel(model)
@@ -116,7 +116,7 @@ class BaseModel(ABC):
         :return: Losses
         """
         return_dict: dict = {}
-        for loss_name in ['loss_idt_A', 'loss_idt_B', 'loss_D_A', 'loss_D_B', 'loss_G_AtoB', 'loss_G_BtoA',
+        for loss_name in ['loss_D_A', 'loss_D_B', 'loss_G_AtoB', 'loss_G_BtoA',
                           'cycle_loss_A', 'cycle_loss_B']:
             loss = getattr(self, loss_name)
             if isinstance(loss, Tensor):
@@ -161,5 +161,17 @@ class BaseModel(ABC):
         self.saveMethod.save_optim_scheduler(self.optimizer_D, f"{epoch}_optim_D.pt")
 
         # Saving Schedulers
-        for i, scheduler in self.schedulers:
+        for i, scheduler in enumerate(self.schedulers):
             self.saveMethod.save_optim_scheduler(scheduler, f"{epoch}_scheduler_{i}.pt")
+            
+    def update_learning_rate(self, metric=0):
+        """Update learning rates for all the networks; called at the end of every epoch"""
+        old_lr = self.optimizers[0].param_groups[0]['lr']
+        for scheduler in self.schedulers:
+            if self.opt.lr_policy == 'plateau':
+                scheduler.step(metric)
+            else:
+                scheduler.step()
+
+        lr = self.optimizers[0].param_groups[0]['lr']
+        print('learning rate %.7f -> %.7f' % (old_lr, lr))

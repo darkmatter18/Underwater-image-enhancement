@@ -275,13 +275,14 @@ def get_scheduler(optimizer, lr_policy, n_epochs, lr_decay_iters, epoch_count, n
             lr_l = 1.0 - max(0, epoch + epoch_count - n_epochs) / float(n_epochs_decay + 1)
             return lr_l
 
-        scheduler = lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda_rule)
+        scheduler = lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda_rule, verbose=False)
     elif lr_policy == 'step':
-        scheduler = lr_scheduler.StepLR(optimizer, step_size=lr_decay_iters, gamma=0.1)
+        scheduler = lr_scheduler.StepLR(optimizer, step_size=lr_decay_iters, gamma=0.1, verbose=False)
     elif lr_policy == 'plateau':
-        scheduler = lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.2, threshold=0.01, patience=5)
+        scheduler = lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.2, threshold=0.01, patience=5, 
+                                                   verbose=False)
     elif lr_policy == 'cosine':
-        scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=n_epochs, eta_min=0)
+        scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=n_epochs, eta_min=0, verbose=False)
     else:
         return NotImplementedError('learning rate policy [%s] is not implemented', lr_policy)
     return scheduler

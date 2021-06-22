@@ -8,11 +8,12 @@ from skimage.metrics import peak_signal_noise_ratio, structural_similarity
 class TestVisualizer:
     def __init__(self, opt):
         self.opt = opt
-        self.dataroot = opt.dataroot
+        self.dataroot = opt.test_dataset_dir
+        self.subdir = opt.test_subdir
         self.phase = opt.phase
 
-        self.dir_A = os.path.join(self.dataroot, self.phase + 'A')  # create a path '/path/to/data/trainA'
-        self.dir_B = os.path.join(self.dataroot, self.phase + 'B')  # create a path '/path/to/data/trainB'
+        self.dir_A = os.path.join(self.dataroot, self.subdir, self.phase + 'A')  # create a path '/path/to/data/trainA'
+        self.dir_B = os.path.join(self.dataroot, self.subdir, self.phase + 'B')  # create a path '/path/to/data/trainB'
 
         # Storing Images and paths
         self.real_images = []
@@ -22,12 +23,7 @@ class TestVisualizer:
         self.ssims = []
 
     def open_image(self, image_path: str):
-        img = None
-        if self.opt.isCloud:
-            print("Cloud Inference is not supported")
-        else:
-            # img = Image.open(image_path).convert('RGB')
-            img = mpimg.imread(image_path)
+        img = mpimg.imread(image_path)
         return img
 
     def display_inference(self):
@@ -48,7 +44,7 @@ class TestVisualizer:
         fig.suptitle(t=f"PSNR: {sum(self.psrns) / len(self.psrns)}\n SSIM: {sum(self.ssims) / len(self.ssims)}")
         plt.show()
 
-    def add_inference(self, image_data: dict, image_path: list):
+    def add_inference(self, image_data: dict, image_path: dict):
         """Displays the test image data
 
         :param image_data: Image data from Model
@@ -58,7 +54,7 @@ class TestVisualizer:
             real_i = tensor2im(image_data['real_A'])
             fake_i = tensor2im(image_data['fake_B'])
             original_of_fake_i = self.open_image(os.path.join(self.dir_B, os.path.basename(
-                os.path.normpath(image_path[0]))))
+                os.path.normpath(image_path["a"][0]))))
 
             psnr = peak_signal_noise_ratio(original_of_fake_i, fake_i)
             ssim = structural_similarity(original_of_fake_i, fake_i, multichannel=True)

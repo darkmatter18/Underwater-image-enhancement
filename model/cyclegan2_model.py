@@ -99,7 +99,7 @@ class CycleGan2Model(BaseModel):
         self.loss_G = self.loss_G_AtoB + self.loss_G_BtoA + self.cycle_loss_A + self.cycle_loss_B
         self.loss_G.backward()
 
-    def backward_D_basic(self, netD, real, fake):
+    def backward_D_basic(self, netD: torch.nn.Module, real: torch.Tensor, fake: torch.Tensor):
         """Calculate GAN loss for the discriminator
 
         :param netD: the discriminator D

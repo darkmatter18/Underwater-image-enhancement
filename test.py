@@ -10,8 +10,6 @@ def main():
     opt = setup_cloud(opt)
     opt.num_threads = 0  # test code only supports num_threads = 1
     opt.batch_size = 1  # test code only supports batch_size = 1
-    # disable data shuffling; comment this line if results on randomly chosen images are needed.
-    # opt.serial_batches = True
     opt.no_flip = True  # no flip; comment this line if results on flipped images are needed.
 
     # Visualizer

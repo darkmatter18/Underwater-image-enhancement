@@ -19,6 +19,7 @@ class TestVisualizer:
         self.real_images = []
         self.fake_images = []
         self.original_of_fake_images = []
+        self.path_names = []
         self.psrns = []
         self.ssims = []
 
@@ -29,8 +30,9 @@ class TestVisualizer:
     def display_inference(self):
         e = len(self.real_images)
         fig, ax = plt.subplots(e, 4, figsize=(10, 2 * e))
-        for i, (r_i, f_i, o_f_i, psnr, ssim) in enumerate(zip(self.real_images, self.fake_images,
-                                                              self.original_of_fake_images, self.psrns, self.ssims)):
+        for i, (r_i, f_i, o_f_i, psnr, ssim, path_name) in enumerate(zip(self.real_images, self.fake_images,
+                                                                         self.original_of_fake_images, self.psrns,
+                                                                         self.ssims, self.path_names)):
             ax[i, 0].imshow(r_i)
             ax[i, 0].set_title("A type Real Image")
             ax[i, 1].imshow(f_i)
@@ -39,7 +41,7 @@ class TestVisualizer:
             ax[i, 2].set_title("B type Real Image")
             ax[i, 3].axis("off")
             ax[i, 3].invert_yaxis()
-            ax[i, 3].text(0.5, 0.5, f"PSNR: {psnr}\nSSIM: {ssim}", verticalalignment="top")
+            ax[i, 3].text(0.5, 0.5, f"PSNR: {psnr}\nSSIM: {ssim}\nPath: {path_name}", verticalalignment="top")
 
         fig.suptitle(t=f"PSNR: {sum(self.psrns) / len(self.psrns)}\n SSIM: {sum(self.ssims) / len(self.ssims)}")
         plt.show()
@@ -62,5 +64,6 @@ class TestVisualizer:
             self.real_images.append(real_i)
             self.fake_images.append(fake_i)
             self.original_of_fake_images.append(original_of_fake_i)
+            self.path_names.append(os.path.basename(os.path.normpath(image_path["a"][0])))
             self.psrns.append(psnr)
             self.ssims.append(ssim)

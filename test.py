@@ -2,10 +2,12 @@ from options.TestOptions import TestOptions
 from data import create_dataset
 from model import create_model
 from utils.TestVisualizer import TestVisualizer
+from utils.setup_cloud import setup_cloud
 
 
 def main():
     opt = TestOptions().parse()
+    opt = setup_cloud(opt)
     opt.num_threads = 0  # test code only supports num_threads = 1
     opt.batch_size = 1  # test code only supports batch_size = 1
     # disable data shuffling; comment this line if results on randomly chosen images are needed.
@@ -16,7 +18,7 @@ def main():
     viz = TestVisualizer(opt)
 
     # Dataset
-    dataset = create_dataset(dataroot=opt.training_data_dir, subdir=opt.subdir, phase=opt.phase,
+    dataset = create_dataset(dataroot=opt.test_dataset_dir, subdir=opt.test_subdir, phase=opt.phase,
                              serial_batches=opt.serial_batches, preprocess=opt.preprocess, no_flip=opt.no_flip,
                              load_size=opt.load_size, crop_size=opt.crop_size, batch_size=opt.batch_size,
                              is_distributed=opt.is_distributed, use_cuda=opt.use_cuda)

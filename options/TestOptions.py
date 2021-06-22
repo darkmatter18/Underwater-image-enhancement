@@ -10,7 +10,9 @@ class TestOptions(BaseOptions):
     def initialized(self, parser):
         parser = BaseOptions.initialized(self, parser)
 
-        parser.add_argument('--subdir', type=str, default="underwater_dark")
+        parser.add_argument('--test-dataset-dir', type=str, default=os.path.join(os.path.dirname(os.getcwd()),
+                                                                                 "Dataset", "EUVP Dataset", "paired"))
+        parser.add_argument('--test-subdir', type=str, default="underwater_dark")
         parser.add_argument('--phase', type=str, default='test')
         parser.add_argument('--training-data-dir', type=str, default=os.getenv("SM_CHANNEL_TRAINING"),
                             help="Training data directory")

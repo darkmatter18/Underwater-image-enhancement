@@ -1,3 +1,4 @@
+import os
 import collections
 from abc import ABC, abstractmethod
 from typing import List
@@ -27,6 +28,7 @@ class BaseModel(ABC):
             self.D_B = None
             self.criterionGAN = None
             self.criterionCycle = None
+            self.optimizers = []
             self.optimizer_G = None
             self.optimizer_D = None
             self.schedulers = []
@@ -175,3 +177,71 @@ class BaseModel(ABC):
 
         lr = self.optimizers[0].param_groups[0]['lr']
         print('learning rate %.7f -> %.7f' % (old_lr, lr))
+
+    def _load_objects(self, file_names: List[str], object_names: List[str]):
+        """Load objects from file
+
+        :param file_names: Name of the Files to load
+        :param object_names: Name of the object, where the files is going to be stored.
+
+        file_names and object_names should be in same order
+        """
+        for file_name, object_name in zip(file_names, object_names):
+            model_name = os.path.join(self.opt.model_dir, file_name)
+            print(f"Loading {object_name} from {model_name}")
+            state_dict = torch.load(model_name, map_location=self.device)
+
+            net = getattr(self, object_name)
+            net.load_state_dict(state_dict)
+
+    def compute_visuals(self, bidirectional=False):
+        """ Computes the Visual output data from the model
+        :type bidirectional: bool
+        :param bidirectional: if true, Calculate both AtoB and BtoA, else calculate AtoB
+        """
+        self.eval()
+        with torch.no_grad():
+            self.fake_B = self.G_AtoB(self.real_A)
+            if bidirectional:
+                self.fake_A = self.G_BtoA(self.real_B)
+
+    def load_networks(self, initials, load_D=False):
+        """ Loading Models
+        Loads from /checkpoint_dir/name/{initials}_net_G_AtoB.pt
+        :type initials: str
+        :param initials: The initials of the model
+        :type load_D: bool
+        :param load_D: Is loading D or not
+        """
+        file_names = [f"{initials}_net_G_AtoB", f"{initials}_net_G_BtoA"]
+        if load_D:
+            file_names.append(f"{initials}_net_D_A.pt")
+            file_names.append(f"{initials}_net_D_B.pt")
+
+        object_names = ['G_AtoB', 'G_BtoA'] if not load_D else ['G_AtoB', 'G_BtoA', 'D_A', 'D_B']
+
+        self._load_objects(file_names, object_names)
+
+    def load_lr_schedulers(self, initials):
+        s_file_name_0 = os.path.join(self.opt.model_dir, f"{initials}_scheduler_0.pt")
+        s_file_name_1 = os.path.join(self.opt.model_dir, f"{initials}_scheduler_1.pt")
+
+        print(f"Loading scheduler-0 from {s_file_name_0}")
+        self.schedulers[0].load_state_dict(torch.load(s_file_name_0, map_location=self.device))
+        print(f"Loading scheduler-1 from {s_file_name_1}")
+        self.schedulers[1].load_state_dict(torch.load(s_file_name_1, map_location=self.device))
+
+    def load_train_model(self, initials):
+        """ Loading Models for training purpose
+
+        :type initials: str
+        :param initials: Initials of the object names
+        """
+        self.load_networks(initials, load_D=True)
+
+        optim_file_names = [f"{initials}_optim_G.pt", f"{initials}_optim_D.pt"]
+        optim_object_names = ['optimizer_G', 'optimizer_D']
+
+        self._load_objects(optim_file_names, optim_object_names)
+
+        self.load_lr_schedulers(initials)

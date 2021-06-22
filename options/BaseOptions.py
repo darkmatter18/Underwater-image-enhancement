@@ -57,7 +57,7 @@ class BaseOptions:
         parser.add_argument('--batch-size', type=int, default=1, help='input batch size')
 
         # Used By AWS
-        parser.add_argument('--hosts', type=list, default=json.loads(os.getenv("SM_HOSTS", "")),
+        parser.add_argument('--hosts', type=list, default=json.loads(os.getenv("SM_HOSTS", '["algo-1","algo-2"]')),
                             help="Hosts list for distributed training")
         parser.add_argument('--current-host', type=str, default=os.getenv("SM_CURRENT_HOST", ""),
                             help="Setup the current Host")
@@ -66,9 +66,11 @@ class BaseOptions:
 
         parser.add_argument('--backend', type=str, default=None,
                             help='backend for distributed training (tcp, gloo on cpu and gloo, nccl on gpu')
-        parser.add_argument("--model-dir", type=str, default=os.getenv("SM_MODEL_DIR"),
+        parser.add_argument("--model-dir", type=str,
+                            default=os.getenv("SM_MODEL_DIR", os.path.join(os.getcwd(), "output", "model")),
                             help="Model artifact saving dir")
-        parser.add_argument('--output-data-dir', type=str, default=os.environ['SM_OUTPUT_DATA_DIR'])
+        parser.add_argument('--output-data-dir', type=str,
+                            default=os.getenv('SM_OUTPUT_DATA_DIR', os.path.join(os.getcwd(), "output", "model")))
         # Cloud parameter
         parser.add_argument('--cloud', default='aws', type=str, help="Name of the cloud provider [aws | gcp | none]")
         return parser
@@ -105,11 +107,6 @@ class BaseOptions:
         # Add Time stamp in the name
         if self.isTrain and opt.name_time:
             opt.name = opt.name + str(int(time.time()))
-
-        # opt.is_distributed = len(opt.hosts) > 1 and opt.backend is not None
-        # opt.use_cuda = opt.num_gpus > 0
-        # opt.device = torch.device("cuda" if opt.use_cuda else "cpu")
-
         self._print_options(opt)
 
         return opt

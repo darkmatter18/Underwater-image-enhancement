@@ -19,7 +19,7 @@ class TrainOptions(BaseOptions):
         # network saving and loading parameters
         parser.add_argument('--training-data-dir', type=str, default=os.getenv("SM_CHANNEL_TRAINING"),
                             help="Training data directory")
-        parser.add_argument('--subdir', type=str, default="underwater_dark")
+        parser.add_argument('--training-subdir', type=str, default="underwater_dark")
         parser.add_argument('--phase', type=str, default='train')
 
         parser.add_argument('--epoch_count', type=int, default=1,

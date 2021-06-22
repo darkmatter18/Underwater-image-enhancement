@@ -9,7 +9,7 @@ if __name__ == '__main__':
     opt = TrainOptions().parse()
     opt = setup_cloud(opt)
 
-    dataset = create_dataset(dataroot=opt.training_data_dir, subdir=opt.subdir, phase=opt.phase,
+    dataset = create_dataset(dataroot=opt.training_data_dir, subdir=opt.training_subdir, phase=opt.phase,
                              serial_batches=opt.serial_batches, preprocess=opt.preprocess, no_flip=opt.no_flip,
                              load_size=opt.load_size, crop_size=opt.crop_size, batch_size=opt.batch_size,
                              is_distributed=opt.is_distributed, use_cuda=opt.use_cuda)
@@ -19,7 +19,6 @@ if __name__ == '__main__':
 
     model = create_model(opt)
     stats = TrainStats(opt)
-    
 
     # Training
     for epoch in range(opt.epoch_count, opt.n_epochs + opt.n_epochs_decay + 1):

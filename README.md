@@ -35,7 +35,7 @@ Underwater Image Enhancement [-h] [--checkpoints_dir CHECKPOINTS_DIR]
 
 ## Running Test
 ```bash
-python -m trainer.test --dataroot "../Dataset/EUVP Dataset/Paired/underwater_dark" --no_gpu --load_model 136
+python test.py --model cyclegan2 --preprocess RAC --load_model 20 --examples 2 --phase train
 ```
 
 ## Metric

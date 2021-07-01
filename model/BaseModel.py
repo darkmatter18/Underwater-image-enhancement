@@ -215,8 +215,8 @@ class BaseModel(ABC):
         """
         file_names = [f"{initials}_net_G_AtoB", f"{initials}_net_G_BtoA"]
         if load_D:
-            file_names.append(f"{initials}_net_D_A.pt")
-            file_names.append(f"{initials}_net_D_B.pt")
+            file_names.append(f"{initials}_net_D_A")
+            file_names.append(f"{initials}_net_D_B")
 
         object_names = ['G_AtoB', 'G_BtoA'] if not load_D else ['G_AtoB', 'G_BtoA', 'D_A', 'D_B']
 

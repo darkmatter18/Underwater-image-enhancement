@@ -38,6 +38,11 @@ class CycleGan2Model(BaseModel):
                                              lr_decay_iters=self.opt.lr_decay_iters, epoch_count=self.opt.epoch_count,
                                              n_epochs_decay=self.opt.n_epochs_decay) for optimizer in self.optimizers]
 
+        if self.isTrain:
+            if self.opt.ct > 0:
+                print(f"Continue training from {self.opt.ct}")
+                self.load_train_model(str(self.opt.ct))
+
     def feed_input(self, x):
         """Unpack input data from the dataloader and perform necessary pre-processing steps.
 

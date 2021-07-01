@@ -108,6 +108,9 @@ class BaseOptions:
         # Add Time stamp in the name
         if self.isTrain and opt.name_time:
             opt.name = opt.name + str(int(time.time()))
+
+        if opt.ct and opt.ct > 0:
+            opt.epoch_count = opt.ct
         self._print_options(opt)
 
         return opt

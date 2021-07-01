@@ -40,8 +40,8 @@ class CycleGan2Model(BaseModel):
 
         if self.isTrain:
             if self.opt.ct > 0:
-                print(f"Continue training from {self.opt.ct}")
-                self.load_train_model(str(self.opt.ct))
+                print(f"Continue training from {self.opt.ct} Localing Model from {self.opt.ct-1}")
+                self.load_train_model(str(self.opt.ct-1))
 
     def feed_input(self, x):
         """Unpack input data from the dataloader and perform necessary pre-processing steps.

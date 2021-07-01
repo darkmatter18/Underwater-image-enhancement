@@ -21,8 +21,8 @@ if __name__ == '__main__':
     stats = TrainStats(opt)
 
     # Training
-    for epoch in range(opt.epoch_count, opt.n_epochs + opt.n_epochs_decay + 1):
-        print(f"Training {epoch}/{opt.n_epochs + opt.n_epochs_decay + 1}")
+    for epoch in range(opt.epoch_count, opt.n_epochs + opt.n_epochs_decay):
+        print(f"Training {epoch}/{opt.n_epochs + opt.n_epochs_decay}")
 
         # Training
         epoch_start_time = time.time()

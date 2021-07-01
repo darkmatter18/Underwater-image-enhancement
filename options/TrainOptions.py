@@ -22,7 +22,7 @@ class TrainOptions(BaseOptions):
         parser.add_argument('--training-subdir', type=str, default="underwater_dark")
         parser.add_argument('--phase', type=str, default='train')
 
-        parser.add_argument('--epoch_count', type=int, default=1,
+        parser.add_argument('--epoch_count', type=int, default=0,
                             help='the starting epoch count, '
                                  'we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>,')
 

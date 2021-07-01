@@ -15,6 +15,7 @@ class BaseModel(ABC):
         self.opt = opt
         self.isTrain = opt.isTrain
         self.device = torch.device("cuda" if opt.use_cuda else "cpu")
+        print(f"Using device: {self.device}")
         self.use_cuda = opt.use_cuda
         self.is_distributed = opt.is_distributed
 

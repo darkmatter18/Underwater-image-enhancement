@@ -21,7 +21,6 @@ def setup_cloud(opt):
 
         opt.is_distributed = is_distributed
         opt.use_cuda = use_cuda
-        return opt
 
     if opt.cloud == "colab":
         # logger.debug("Distributed training - {}".format(is_distributed))
@@ -30,9 +29,10 @@ def setup_cloud(opt):
 
         opt.is_distributed = False
         opt.use_cuda = use_cuda
-        return opt
 
     else:
         opt.is_distributed = False
         opt.use_cuda = False
-        return opt
+
+    print(f"Using: {opt.cloud} Using Cuda: {opt.use_cuda}, using distributed training: {opt.is_distributed}")
+    return opt

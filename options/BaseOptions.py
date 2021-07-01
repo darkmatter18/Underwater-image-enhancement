@@ -70,9 +70,10 @@ class BaseOptions:
                             default=os.getenv("SM_MODEL_DIR", os.path.join(os.getcwd(), "output", "model")),
                             help="Model artifact saving dir")
         parser.add_argument('--output-data-dir', type=str,
-                            default=os.getenv('SM_OUTPUT_DATA_DIR', os.path.join(os.getcwd(), "output", "model")))
+                            default=os.getenv('SM_OUTPUT_DATA_DIR', os.path.join(os.getcwd(), "output", "data")))
         # Cloud parameter
-        parser.add_argument('--cloud', default='aws', type=str, help="Name of the cloud provider [aws | gcp | none]")
+        parser.add_argument('--cloud', default='aws', type=str,
+                            help="Name of the cloud provider [aws | gcp | colab | none]")
         return parser
 
     def _print_options(self, opt):

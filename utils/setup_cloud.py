@@ -3,6 +3,8 @@ import os
 import torch.cuda
 import torch.distributed as dist
 
+from utils import mkdirs
+
 
 def setup_cloud(opt):
     if opt.cloud == "aws":
@@ -26,7 +28,7 @@ def setup_cloud(opt):
         # logger.debug("Distributed training - {}".format(is_distributed))
         use_cuda = opt.num_gpus > 0 and torch.cuda.is_available()
         # logger.debug("Number of gpus available - {}".format(args.num_gpus))
-
+        mkdirs(opt.model_dir)
         opt.is_distributed = False
         opt.use_cuda = use_cuda
 

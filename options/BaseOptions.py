@@ -45,6 +45,7 @@ class BaseOptions:
         parser.add_argument('--no_dropout', action='store_true', help='no dropout for the generator')
 
         # dataset parameters
+        parser.add_argument('--ct', type=int, help='number of epochs to start continue training')
         parser.add_argument('--serial_batches', action='store_true',
                             help='if true, takes images in order to make batches, otherwise takes them randomly')
         parser.add_argument('--preprocess', type=str, required=True,

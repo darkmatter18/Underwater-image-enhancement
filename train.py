@@ -1,4 +1,5 @@
 import time
+from tqdm import tqdm
 from data import create_dataset
 from model import create_model
 from options.TrainOptions import TrainOptions
@@ -27,9 +28,10 @@ if __name__ == '__main__':
         # Training
         epoch_start_time = time.time()
         model.train()
-        for i, data in enumerate(dataset):
-            model.feed_input(data)
-            model.optimize_parameters()
+        with tqdm(dataset, unit="batch") as t_epoch:
+            for data in t_epoch:
+                model.feed_input(data)
+                model.optimize_parameters()
 
         training_end_time = time.time()
         # Training block ends

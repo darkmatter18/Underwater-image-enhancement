@@ -3,7 +3,7 @@ from data import create_dataset
 from model import create_model
 from utils.TestVisualizer import TestVisualizer
 from utils.setup_cloud import setup_cloud
-
+from tqdm import tqdm
 
 def main():
     opt = TestOptions().parse()
@@ -26,10 +26,11 @@ def main():
     cycleGan.load_networks(opt.load_model)
 
     if opt.all:
-        for data in dataset:
-            cycleGan.feed_input(data)
-            cycleGan.compute_visuals()
-            viz.add_inference(cycleGan.get_current_visuals(), cycleGan.get_current_image_path())
+        with tqdm(dataset, unit="batch") as t_epoch:
+            for data in t_epoch:
+                cycleGan.feed_input(data)
+                cycleGan.compute_visuals()
+                viz.add_inference(cycleGan.get_current_visuals(), cycleGan.get_current_image_path())
     else:
         dataset_iter = iter(dataset)
         no_of_examples = int(opt.examples)

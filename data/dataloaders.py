@@ -7,7 +7,7 @@ class UWIEDataloader:
     """Wrapper class of Dataset class that performs multi-threaded data loading"""
 
     def __init__(self, torch_dataset: Dataset, batch_size: int = 1, is_distributed: bool = False,
-                 use_cuda: bool = False):
+                 use_cuda: bool = False, is_test: bool = True):
         """
         Custom Dataloader Function
 
@@ -29,7 +29,7 @@ class UWIEDataloader:
         self.dataloader = DataLoader(
             self.dataset,
             batch_size=batch_size,
-            shuffle=train_sampler is None,
+            shuffle=train_sampler is None or is_test,
             sampler=train_sampler,
             **kwargs)
 

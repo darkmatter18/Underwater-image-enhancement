@@ -25,9 +25,6 @@ class TestVisualizer:
         self.psrns = []
         self.ssims = []
 
-    def open_image(self, image_path: str):
-        img = mpimg.imread(image_path)
-        return img
 
     def display_inference(self):
         if self.visuals:
@@ -49,7 +46,7 @@ class TestVisualizer:
             fig.suptitle(t=f"PSNR: {sum(self.psrns) / len(self.psrns)}\n SSIM: {sum(self.ssims) / len(self.ssims)}")
             plt.show()
 
-        with open(os.path.join(os.getcwd(), "output", "test", "data.pkl"), 'wb') as f:
+        with open(os.path.join(os.getcwd(), "output", f"{self.opt.load_model}_data.pkl"), 'wb+') as f:
             pickle.dump({'psnr': self.psrns, 'ssim': self.ssims}, f)
 
     def add_inference(self, image_data: dict, image_path: dict):
@@ -61,16 +58,20 @@ class TestVisualizer:
         if 'fake_B' in image_data:
             real_i = tensor2im(image_data['real_A'])
             fake_i = tensor2im(image_data['fake_B'])
-            original_of_fake_i = self.open_image(os.path.join(self.dir_B, os.path.basename(
-                os.path.normpath(image_path["a"][0]))))
+            try:
+                original_of_fake_i = mpimg.imread(os.path.join(self.dir_B, os.path.basename(
+                    os.path.normpath(image_path["a"][0]))))
 
-            psnr = peak_signal_noise_ratio(original_of_fake_i, fake_i)
-            ssim = structural_similarity(original_of_fake_i, fake_i, multichannel=True)
+                psnr = peak_signal_noise_ratio(original_of_fake_i, fake_i)
+                ssim = structural_similarity(original_of_fake_i, fake_i, multichannel=True)
 
-            if self.visuals:
-                self.real_images.append(real_i)
-                self.fake_images.append(fake_i)
-                self.original_of_fake_images.append(original_of_fake_i)
-            self.path_names.append(os.path.basename(os.path.normpath(image_path["a"][0])))
-            self.psrns.append(psnr)
-            self.ssims.append(ssim)
+                if self.visuals:
+                    self.real_images.append(real_i)
+                    self.fake_images.append(fake_i)
+                    self.original_of_fake_images.append(original_of_fake_i)
+                self.path_names.append(os.path.basename(os.path.normpath(image_path["a"][0])))
+                self.psrns.append(psnr)
+                self.ssims.append(ssim)
+            except:
+                print(f"{image_path['a'][0]} File Not Found")
+

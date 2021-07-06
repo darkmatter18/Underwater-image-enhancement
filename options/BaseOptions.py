@@ -1,7 +1,9 @@
 import argparse
-import os
 import json
+import logging
+import os
 
+import sys
 import time
 
 from utils import mkdirs
@@ -24,7 +26,7 @@ class BaseOptions:
                             help='name of the experiment. It decides where to store samples and models')
         parser.add_argument('--name_time', action='store_true', help='Add Timestamp after name')
         parser.add_argument('--model', type=str, required=True, help='Name of the model')
-        parser.add_argument('--print_opt', action='store_true', help='no dropout for the generator')
+        parser.add_argument('--log_out', action='store_true', help='no dropout for the generator')
         # parser.add_argument('--dataroot', required=True, type=str,
         #                     help="ROOT of the image dataset (should have sub folders trainA, trainB, valA, valB, etc)
         #                     ")
@@ -93,7 +95,7 @@ class BaseOptions:
                 comment = '\t[default: %s]' % str(default)
             message += '{:>25}: {:<30}{}\n'.format(str(k), str(v), comment)
         message += '----------------- End -------------------'
-        print(message)
+        opt.logger.info(message)
 
         # save to the disk
         expr_dir = os.path.join(opt.checkpoints_dir, opt.name)
@@ -113,7 +115,15 @@ class BaseOptions:
 
         if opt.ct and opt.ct > 0:
             opt.epoch_count = opt.ct
-        if opt.print_opt:
-            self._print_options(opt)
+
+        logger = logging.getLogger('UWIE')
+        logger.setLevel(logging.DEBUG)
+        logger.addHandler(logging.FileHandler(os.path.join(opt.output_data_dir, "logging.log")))
+        if opt.log_out:
+            logger.addHandler(logging.StreamHandler(sys.stdout))
+
+        opt.logger = logger
+
+        self._print_options(opt)
 
         return opt

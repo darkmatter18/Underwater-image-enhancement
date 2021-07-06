@@ -1,4 +1,4 @@
-from tqdm import tqdm, trange
+from tqdm import tqdm
 
 from data import create_dataset
 from model import create_model
@@ -36,8 +36,9 @@ def main():
     else:
         dataset_iter = iter(dataset)
         no_of_examples = int(opt.examples)
-        print(f"Testing for {no_of_examples} examples")
-        for _ in trange(no_of_examples):
+        opt.logger.info(f"Testing for {no_of_examples} examples")
+        for i in range(no_of_examples):
+            opt.logger.info(f"running {i} out of {no_of_examples}")
             data = next(dataset_iter)
             cycleGan.feed_input(data)
             cycleGan.compute_visuals()

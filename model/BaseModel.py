@@ -15,7 +15,7 @@ class BaseModel(ABC):
         self.opt = opt
         self.isTrain = opt.isTrain
         self.device = torch.device("cuda" if opt.use_cuda else "cpu")
-        print(f"Using device: {self.device}")
+        opt.logger.info(f"Using device: {self.device}")
         self.use_cuda = opt.use_cuda
         self.is_distributed = opt.is_distributed
 
@@ -189,7 +189,7 @@ class BaseModel(ABC):
         """
         for file_name, object_name in zip(file_names, object_names):
             model_name = os.path.join(self.opt.model_dir, file_name)
-            print(f"Loading {object_name} from {model_name}")
+            self.opt.logger.info(f"Loading {object_name} from {model_name}")
             state_dict = torch.load(model_name, map_location=self.device)
 
             net = getattr(self, object_name)

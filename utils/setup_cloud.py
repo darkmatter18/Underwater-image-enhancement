@@ -36,5 +36,5 @@ def setup_cloud(opt):
         opt.is_distributed = False
         opt.use_cuda = False
 
-    print(f"Using: {opt.cloud} Using Cuda: {opt.use_cuda}, using distributed training: {opt.is_distributed}")
+    opt.logger.info(f"Using: {opt.cloud} Using Cuda: {opt.use_cuda}, using distributed training: {opt.is_distributed}")
     return opt

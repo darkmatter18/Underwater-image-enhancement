@@ -24,8 +24,6 @@ class UWIEDataloader:
         # Variables for distributed training
         train_sampler = DistributedSampler(self.dataset) if self.is_distributed else None
         kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
-
-        print(f" dataset [{type(self.dataset).__name__}] was created")
         self.dataloader = DataLoader(
             self.dataset,
             batch_size=batch_size,

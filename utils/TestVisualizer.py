@@ -1,9 +1,13 @@
 import os
 import pickle
-import matplotlib.pyplot as plt
-from . import tensor2im
+
 import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
+from skimage.measure import shannon_entropy
 from skimage.metrics import peak_signal_noise_ratio, structural_similarity
+
+from . import tensor2im
+from .nmetrics import nmetrics
 
 
 class TestVisualizer:
@@ -24,15 +28,17 @@ class TestVisualizer:
         self.path_names = []
         self.psrns = []
         self.ssims = []
-
+        self.entropy = []
+        self.uiqms = []
+        self.uciqes = []
 
     def display_inference(self):
         if self.visuals:
             e = len(self.real_images)
             fig, ax = plt.subplots(e, 4, figsize=(10, 2 * e))
-            for i, (r_i, f_i, o_f_i, psnr, ssim, path_name) in enumerate(zip(self.real_images, self.fake_images,
-                                                                             self.original_of_fake_images, self.psrns,
-                                                                             self.ssims, self.path_names)):
+            for i, (r_i, f_i, o_f_i, psnr, ssim, path_name, entropy, uiqm, uciqe) in \
+                    enumerate(zip(self.real_images, self.fake_images, self.original_of_fake_images, self.psrns,
+                                  self.ssims, self.path_names, self.entropy, self.uiqms, self.uciqes)):
                 ax[i, 0].imshow(r_i)
                 ax[i, 0].set_title("A type Real Image")
                 ax[i, 1].imshow(f_i)
@@ -41,7 +47,8 @@ class TestVisualizer:
                 ax[i, 2].set_title("B type Real Image")
                 ax[i, 3].axis("off")
                 ax[i, 3].invert_yaxis()
-                ax[i, 3].text(0.5, 0.5, f"PSNR: {psnr}\nSSIM: {ssim}\nPath: {path_name}", verticalalignment="top")
+                ax[i, 3].text(0.5, 0.5, f"PSNR: {psnr}\nSSIM: {ssim}\nEntropy: {entropy}\nUIQM:{uiqm}\nUCIQM:{uciqe}\n"
+                                        f"Path: {path_name}", verticalalignment="top")
 
             fig.suptitle(t=f"PSNR: {sum(self.psrns) / len(self.psrns)}\n SSIM: {sum(self.ssims) / len(self.ssims)}")
             plt.show()
@@ -64,6 +71,8 @@ class TestVisualizer:
 
                 psnr = peak_signal_noise_ratio(original_of_fake_i, fake_i)
                 ssim = structural_similarity(original_of_fake_i, fake_i, multichannel=True)
+                entropy = shannon_entropy(fake_i)
+                uiqm, uciqe = nmetrics(fake_i)
 
                 if self.visuals:
                     self.real_images.append(real_i)
@@ -72,6 +81,8 @@ class TestVisualizer:
                 self.path_names.append(os.path.basename(os.path.normpath(image_path["a"][0])))
                 self.psrns.append(psnr)
                 self.ssims.append(ssim)
+                self.entropy.append(entropy)
+                self.uiqms.append(uiqm)
+                self.uciqes.append(uciqe)
             except:
                 print(f"{image_path['a'][0]} File Not Found")
-

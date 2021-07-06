@@ -35,7 +35,7 @@ Underwater Image Enhancement [-h] [--checkpoints_dir CHECKPOINTS_DIR]
 
 ## Running Test
 ```bash
-python test.py --model cyclegan2 --preprocess RAC --load_model 20 --examples 2 --phase train
+python test.py --model cyclegan2 --preprocess RAC --load_model 20 --examples 2 --phase train --visuals
 ```
 
 ## Metric

@@ -1,9 +1,11 @@
-from options.TestOptions import TestOptions
+from tqdm import tqdm, trange
+
 from data import create_dataset
 from model import create_model
+from options.TestOptions import TestOptions
 from utils.TestVisualizer import TestVisualizer
 from utils.setup_cloud import setup_cloud
-from tqdm import tqdm
+
 
 def main():
     opt = TestOptions().parse()
@@ -35,12 +37,11 @@ def main():
         dataset_iter = iter(dataset)
         no_of_examples = int(opt.examples)
         print(f"Testing for {no_of_examples} examples")
-        while no_of_examples > 0:
+        for _ in trange(no_of_examples):
             data = next(dataset_iter)
             cycleGan.feed_input(data)
             cycleGan.compute_visuals()
             viz.add_inference(cycleGan.get_current_visuals(), cycleGan.get_current_image_path())
-            no_of_examples -= 1
 
     viz.display_inference()
 

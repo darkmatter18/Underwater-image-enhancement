@@ -35,7 +35,7 @@ class TestVisualizer:
     def display_inference(self):
         if self.visuals:
             e = len(self.real_images)
-            fig, ax = plt.subplots(e, 4, figsize=(10, 2 * e))
+            fig, ax = plt.subplots(e, 4, figsize=(15, 4 * e))
             for i, (r_i, f_i, o_f_i, psnr, ssim, path_name, entropy, uiqm, uciqe) in \
                     enumerate(zip(self.real_images, self.fake_images, self.original_of_fake_images, self.psrns,
                                   self.ssims, self.path_names, self.entropy, self.uiqms, self.uciqes)):
@@ -47,8 +47,8 @@ class TestVisualizer:
                 ax[i, 2].set_title("B type Real Image")
                 ax[i, 3].axis("off")
                 ax[i, 3].invert_yaxis()
-                ax[i, 3].text(0.5, 0.5, f"PSNR: {psnr}\nSSIM: {ssim}\nEntropy: {entropy}\nUIQM:{uiqm}\nUCIQM:{uciqe}\n"
-                                        f"Path: {path_name}", verticalalignment="top")
+                ax[i, 3].text(0.5, 0.5, f"PSNR: {psnr}\nSSIM: {ssim}\nEntropy: {entropy}\nUIQM: {uiqm}\n"
+                                        f"UCIQM: {uciqe}\n Path: {path_name}", verticalalignment="top")
 
             fig.suptitle(t=f"PSNR: {sum(self.psrns) / len(self.psrns)}\n SSIM: {sum(self.ssims) / len(self.ssims)}")
             plt.show()

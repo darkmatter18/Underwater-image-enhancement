@@ -24,6 +24,7 @@ class BaseOptions:
                             help='name of the experiment. It decides where to store samples and models')
         parser.add_argument('--name_time', action='store_true', help='Add Timestamp after name')
         parser.add_argument('--model', type=str, required=True, help='Name of the model')
+        parser.add_argument('--print_opt', action='store_true', help='no dropout for the generator')
         # parser.add_argument('--dataroot', required=True, type=str,
         #                     help="ROOT of the image dataset (should have sub folders trainA, trainB, valA, valB, etc)
         #                     ")
@@ -112,6 +113,7 @@ class BaseOptions:
 
         if opt.ct and opt.ct > 0:
             opt.epoch_count = opt.ct
-        self._print_options(opt)
+        if opt.print_opt:
+            self._print_options(opt)
 
         return opt

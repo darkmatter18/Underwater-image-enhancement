@@ -177,7 +177,7 @@ class BaseModel(ABC):
                 scheduler.step()
 
         lr = self.optimizers[0].param_groups[0]['lr']
-        print('learning rate %.7f -> %.7f' % (old_lr, lr))
+        opt.logger.info('learning rate %.7f -> %.7f' % (old_lr, lr))
 
     def _load_objects(self, file_names: List[str], object_names: List[str]):
         """Load objects from file
@@ -227,9 +227,9 @@ class BaseModel(ABC):
         s_file_name_0 = os.path.join(self.opt.model_dir, f"{initials}_scheduler_0.pt")
         s_file_name_1 = os.path.join(self.opt.model_dir, f"{initials}_scheduler_1.pt")
 
-        print(f"Loading scheduler-0 from {s_file_name_0}")
+        opt.logger.info(f"Loading scheduler-0 from {s_file_name_0}")
         self.schedulers[0].load_state_dict(torch.load(s_file_name_0, map_location=self.device))
-        print(f"Loading scheduler-1 from {s_file_name_1}")
+        opt.logger.info(f"Loading scheduler-1 from {s_file_name_1}")
         self.schedulers[1].load_state_dict(torch.load(s_file_name_1, map_location=self.device))
 
     def load_train_model(self, initials):

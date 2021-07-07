@@ -50,7 +50,6 @@ class TestVisualizer:
                 ax[i, 3].text(0.5, 0.5, f"PSNR: {psnr}\nSSIM: {ssim}\nEntropy: {entropy}\nUIQM: {uiqm}\n"
                                         f"UCIQM: {uciqe}\n Path: {path_name}", verticalalignment="top")
 
-            fig.suptitle(t=f"PSNR: {sum(self.psrns) / len(self.psrns)}\n SSIM: {sum(self.ssims) / len(self.ssims)}")
             plt.show()
 
         with open(os.path.join(os.getcwd(), "output", f"{self.opt.load_model}_data.pkl"), 'wb+') as f:
@@ -85,4 +84,4 @@ class TestVisualizer:
                 self.uiqms.append(uiqm)
                 self.uciqes.append(uciqe)
             except:
-                print(f"{image_path['a'][0]} File Not Found")
+                self.opt.logger.error(f"{image_path['a'][0]} File Not Found")

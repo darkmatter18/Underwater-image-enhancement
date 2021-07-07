@@ -8,6 +8,7 @@ from PIL import Image
 class TrainStats:
     def __init__(self, opt):
         # create a logging file to store training losses
+        self.opt = opt
         self.log_loss_dir = opt.output_data_dir
         self.img_dir = os.path.join(opt.output_data_dir, 'visuals')
         self.log_file_name = f'loss_log_{str(int(time.time()))}.txt'
@@ -42,7 +43,7 @@ class TrainStats:
         lss = os.path.join(self.log_loss_dir, self.log_file_name)
         liss = os.path.join(self.log_loss_dir, self.loss_file_name)
 
-        print(message)  # print the message
+        self.opt.logger.debug(message)  # print the message
         with open(lss, "a") as log_file:
             log_file.write('%s\n' % message)
 

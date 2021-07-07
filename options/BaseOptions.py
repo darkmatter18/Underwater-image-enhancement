@@ -6,8 +6,6 @@ import os
 import sys
 import time
 
-from utils import mkdirs
-
 
 class BaseOptions:
     def __init__(self):
@@ -96,14 +94,6 @@ class BaseOptions:
             message += '{:>25}: {:<30}{}\n'.format(str(k), str(v), comment)
         message += '----------------- End -------------------'
         opt.logger.info(message)
-
-        # save to the disk
-        expr_dir = os.path.join(opt.checkpoints_dir, opt.name)
-        mkdirs(expr_dir)
-        file_name = os.path.join(expr_dir, '{}_opt.txt'.format(opt.phase))
-        with open(file_name, 'wt') as opt_file:
-            opt_file.write(message)
-            opt_file.write('\n')
 
     def parse(self):
         opt = self.parser.parse_args()

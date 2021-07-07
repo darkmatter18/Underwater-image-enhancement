@@ -16,14 +16,14 @@ if __name__ == '__main__':
                              is_distributed=opt.is_distributed, use_cuda=opt.use_cuda, is_test=True)
 
     dataset_size = len(dataset)
-    print('The number of training images = %d' % dataset_size)
+    opt.logger.info('The number of training images = %d' % dataset_size)
 
     model = create_model(opt)
     stats = TrainStats(opt)
 
     # Training
     for epoch in range(opt.epoch_count, opt.n_epochs + opt.n_epochs_decay):
-        print(f"Training {epoch}/{opt.n_epochs + opt.n_epochs_decay}")
+        opt.logger.info(f"Training {epoch}/{opt.n_epochs + opt.n_epochs_decay}")
 
         # Training
         epoch_start_time = time.time()
@@ -43,20 +43,20 @@ if __name__ == '__main__':
 
         # Save model generated images and losses
         if epoch % opt.visuals_freq == 0:
-            print(f"Saving Visuals (epoch: {epoch})")
+            opt.logger.info(f"Saving Visuals (epoch: {epoch})")
             stats.save_current_visuals(model.get_current_visuals(), f'img-{epoch}')
             stats.print_current_losses(epoch, model.get_current_losses(), t_comp, t_data)
 
         # Save model artifacts
         if epoch % opt.artifact_freq == 0:
-            print(f'saving the model at the end of epoch {epoch}')
+            opt.logger.info(f'saving the model at the end of epoch {epoch}')
             model.save_networks(str(epoch))
             model.save_optimizers_and_scheduler(str(epoch))
         # Evaluation block ends
 
-        print(f'End of epoch {epoch} / {opt.n_epochs + opt.n_epochs_decay} \t '
-              f'Time Taken: {time.time() - epoch_start_time} sec')
+        opt.logger.info(f'End of epoch {epoch} / {opt.n_epochs + opt.n_epochs_decay} \t '
+                        f'Time Taken: {time.time() - epoch_start_time} sec')
 
         model.update_learning_rate()
 
-    print("End of training!!!")
+    opt.logger.info("End of training!!!")

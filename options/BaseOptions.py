@@ -108,7 +108,11 @@ class BaseOptions:
 
         logger = logging.getLogger('UWIE')
         logger.setLevel(logging.DEBUG)
-        logger.addHandler(logging.FileHandler(os.path.join(opt.output_data_dir, "logging.log")))
+        if self.isTrain:
+            log_file = "logging_train.log"
+        else:
+            log_file = "logging_test.log"
+        logger.addHandler(logging.FileHandler(os.path.join(opt.output_data_dir, log_file)))
         if opt.log_out:
             logger.addHandler(logging.StreamHandler(sys.stdout))
 

@@ -40,7 +40,7 @@ class CycleGan2Model(BaseModel):
 
         if self.isTrain:
             if self.opt.ct > 0:
-                opt.logger.info(f"Continue training from {self.opt.ct} Localing Model from {self.opt.ct-1}")
+                self.opt.logger.info(f"Continue training from {self.opt.ct} Localing Model from {self.opt.ct-1}")
                 self.load_train_model(str(self.opt.ct-1))
 
     def feed_input(self, x):

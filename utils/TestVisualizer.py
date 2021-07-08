@@ -70,8 +70,14 @@ class TestVisualizer:
 
                 psnr = peak_signal_noise_ratio(original_of_fake_i, fake_i)
                 ssim = structural_similarity(original_of_fake_i, fake_i, multichannel=True)
-                entropy = shannon_entropy(fake_i)
-                uiqm, uciqe = nmetrics(fake_i)
+
+                # Calculate only if --all_metrics is passed explicitly
+                entropy = None
+                uiqm = None
+                uciqe = None
+                if self.opt.all_metrics:
+                    entropy = shannon_entropy(fake_i)
+                    uiqm, uciqe = nmetrics(fake_i)
 
                 if self.visuals:
                     self.real_images.append(real_i)

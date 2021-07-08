@@ -20,4 +20,5 @@ class TestOptions(BaseOptions):
         parser.add_argument('--all', action='store_true')
         parser.add_argument('--examples', type=int, default=1, help='No of examples for testing')
         parser.add_argument('--visuals', action='store_true')
+        parser.add_argument('--all_metrics', action='store_true')
         return parser

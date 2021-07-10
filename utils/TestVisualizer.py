@@ -30,9 +30,15 @@ class TestVisualizer:
         self.path_names = []
         self.psrns = []
         self.ssims = []
-        self.entropy = []
-        self.uiqms = []
-        self.uciqes = []
+        self.entropys_r_a = []
+        self.entropys_r_b = []
+        self.entropys_f_b = []
+        self.uiqms_r_a = []
+        self.uiqms_r_b = []
+        self.uiqms_f_b = []
+        self.uciqes_r_a = []
+        self.uciqes_r_b = []
+        self.uciqes_f_b = []
 
     def display_inference(self):
         if self.visuals:
@@ -63,15 +69,21 @@ class TestVisualizer:
                 mpimg.imsave(os.path.join(p, f"fake_A_{self.opt.load_model}_{i}.jpg"), f_i)
                 mpimg.imsave(os.path.join(p, f"real_B_{self.opt.load_model}_{i}.jpg"), o_f_i)
             with open(os.path.join(p, f"{self.opt.load_model}_data.pkl"), 'wb+') as f:
-                pickle.dump({'psnr': self.psrns, 'ssim': self.ssims, 'entropy': self.entropy, 'uiqm': self.uiqms,
-                             'uciqm': self.uciqes}, f)
+                pickle.dump({'psnr': self.psrns, 'ssim': self.ssims, 'entropy_r_a': self.entropys_r_a,
+                             'entropy_r_b': self.entropys_r_b, 'entropy_f_b': self.entropys_f_b,
+                             'uiqm_r_a': self.uiqms_r_a, 'uiqm_r_b': self.uiqms_r_b, 'uiqm_f_b': self.uiqms_f_b,
+                             'uciqm_r_a': self.uciqes_r_a, 'uciqm_r_b': self.uciqes_r_b, 'uciqm_f_b': self.uciqes_f_b,
+                             }, f)
 
         if self.all:
             p = os.path.join(os.getcwd(), "output", "metrics")
             mkdirs(p)
             with open(os.path.join(p, f"{self.opt.load_model}_data.pkl"), 'wb+') as f:
-                pickle.dump({'psnr': self.psrns, 'ssim': self.ssims, 'entropy': self.entropy, 'uiqm': self.uiqms,
-                             'uciqm': self.uciqes}, f)
+                pickle.dump({'psnr': self.psrns, 'ssim': self.ssims, 'entropy_r_a': self.entropys_r_a,
+                             'entropy_r_b': self.entropys_r_b, 'entropy_f_b': self.entropys_f_b,
+                             'uiqm_r_a': self.uiqms_r_a, 'uiqm_r_b': self.uiqms_r_b, 'uiqm_f_b': self.uiqms_f_b,
+                             'uciqm_r_a': self.uciqes_r_a, 'uciqm_r_b': self.uciqes_r_b, 'uciqm_f_b': self.uciqes_f_b,
+                             }, f)
 
     def add_inference(self, image_data: dict, image_path: dict):
         """Displays the test image data
@@ -94,8 +106,12 @@ class TestVisualizer:
                 uiqm = None
                 uciqe = None
                 if self.opt.all_metrics:
-                    entropy = shannon_entropy(fake_i)
-                    uiqm, uciqe = nmetrics(fake_i)
+                    entropy_f_b = shannon_entropy(fake_i)
+                    uiqm_f_b, uciqe_f_b = nmetrics(fake_i)
+                    entropy_r_a = shannon_entropy(real_i)
+                    uiqm_r_a, uciqe_r_a = nmetrics(real_i)
+                    entropy_r_b = shannon_entropy(original_of_fake_i)
+                    uiqm_r_b, uciqe_r_b = nmetrics(original_of_fake_i)
 
                 self.real_images.append(real_i)
                 self.fake_images.append(fake_i)
@@ -103,8 +119,14 @@ class TestVisualizer:
                 self.path_names.append(os.path.basename(os.path.normpath(image_path["a"][0])))
                 self.psrns.append(psnr)
                 self.ssims.append(ssim)
-                self.entropy.append(entropy)
-                self.uiqms.append(uiqm)
-                self.uciqes.append(uciqe)
+                self.entropys_f_b.append(entropy_f_b)
+                self.entropys_r_a.append(entropy_r_a)
+                self.entropys_r_b.append(entropy_r_b)
+                self.uiqms_f_b.append(uiqm_f_b)
+                self.uiqms_r_a.append(uiqm_r_a)
+                self.uiqms_r_b.append(uiqm_r_b)
+                self.uciqes_f_b.append(uciqe_f_b)
+                self.uciqes_r_a.append(uciqe_r_a)
+                self.uciqes_r_b.append(uciqe_r_b)
             except:
                 self.opt.logger.error(f"{image_path['a'][0]} File Not Found")

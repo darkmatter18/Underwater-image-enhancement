@@ -2,7 +2,7 @@ import torch
 import itertools
 
 from .BaseModel import BaseModel
-from networks.cyclegan2_networks import NLayerDiscriminator, ResnetGenerator, GANLoss, get_scheduler
+from networks.cyclegan2_networks import NLayerDiscriminator, ResnetGenerator, GANLoss, get_scheduler, get_norm_layer
 
 
 class CycleGan2Model(BaseModel):
@@ -10,14 +10,20 @@ class CycleGan2Model(BaseModel):
         super().__init__(opt)
         self.G_AtoB = self.build_model(ResnetGenerator(input_nc=3, output_nc=3, ngf=self.opt.ngf,
                                                        n_blocks=self.opt.n_blocks_G,
+                                                       norm_layer=get_norm_layer(self.opt.norm),
                                                        use_dropout=not self.opt.no_dropout))
         self.G_BtoA = self.build_model(ResnetGenerator(input_nc=3, output_nc=3, ngf=self.opt.ngf,
                                                        n_blocks=self.opt.n_blocks_G,
+                                                       norm_layer=get_norm_layer(self.opt.norm),
                                                        use_dropout=not self.opt.no_dropout))
         self.net_names = ['G_AtoB', 'G_BtoA']
         if self.isTrain:
-            self.D_A = self.build_model(NLayerDiscriminator(input_nc=3, ndf=self.opt.ndf, n_layers=self.opt.n_layers_D))
-            self.D_B = self.build_model(NLayerDiscriminator(input_nc=3, ndf=self.opt.ndf, n_layers=self.opt.n_layers_D))
+            self.D_A = self.build_model(NLayerDiscriminator(input_nc=3, ndf=self.opt.ndf,
+                                                            norm_layer=get_norm_layer(self.opt.norm),
+                                                            n_layers=self.opt.n_layers_D))
+            self.D_B = self.build_model(NLayerDiscriminator(input_nc=3, ndf=self.opt.ndf,
+                                                            norm_layer=get_norm_layer(self.opt.norm),
+                                                            n_layers=self.opt.n_layers_D))
 
             self.net_names.append('D_A')
             self.net_names.append('D_B')

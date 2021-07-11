@@ -35,8 +35,8 @@ class BaseOptions:
         parser.add_argument('--ndf', type=int, default=64, help='# of discrim filters in the first conv layer')
         parser.add_argument('--n_layers_D', type=int, default=3, help='only used if netD==n_layers')
         parser.add_argument('--n_blocks_G', type=int, default=9, help='no of Resnet Blocks in Generator')
-        # parser.add_argument('--norm', type=str, default='instance',
-        #                     help='instance normalization or batch normalization [instance | batch | none]')
+        parser.add_argument('--norm', type=str, default='instance',
+                            help='instance normalization or batch normalization [instance | batch | none]')
         # parser.add_argument('--padding_type', type=str, default='reflect',
         #                     help='the name of padding layer: reflect | replicate | zero')
         # parser.add_argument('--init_type', type=str, default='normal',

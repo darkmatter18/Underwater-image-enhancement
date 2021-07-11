@@ -286,3 +286,26 @@ def get_scheduler(optimizer, lr_policy, n_epochs, lr_decay_iters, epoch_count, n
     else:
         return NotImplementedError('learning rate policy [%s] is not implemented', lr_policy)
     return scheduler
+
+
+class Identity(nn.Module):
+    def forward(self, x):
+        return x
+
+
+def get_norm_layer(norm_type='instance'):
+    """Return a normalization layer
+    Parameters:
+        norm_type (str) -- the name of the normalization layer: batch | instance | none
+    For BatchNorm, we use learnable affine parameters and track running statistics (mean/stddev).
+    For InstanceNorm, we do not use learnable affine parameters. We do not track running statistics.
+    """
+    if norm_type == 'batch':
+        norm_layer = nn.BatchNorm2d
+    elif norm_type == 'instance':
+        norm_layer = nn.InstanceNorm2d
+    elif norm_type == 'none':
+        def norm_layer(x): return Identity()
+    else:
+        raise NotImplementedError('normalization layer [%s] is not found' % norm_type)
+    return norm_layer

@@ -169,15 +169,18 @@ class BaseModel(ABC):
             
     def update_learning_rate(self, metric=0):
         """Update learning rates for all the networks; called at the end of every epoch"""
-        old_lr = self.optimizers[0].param_groups[0]['lr']
-        for scheduler in self.schedulers:
-            if self.opt.lr_policy == 'plateau':
-                scheduler.step(metric)
-            else:
-                scheduler.step()
+        if self.schedulers is not None and len(self.schedulers) > 0:
+            old_lr = self.optimizers[0].param_groups[0]['lr']
+            for scheduler in self.schedulers:
+                if self.opt.lr_policy == 'plateau':
+                    scheduler.step(metric)
+                else:
+                    scheduler.step()
 
-        lr = self.optimizers[0].param_groups[0]['lr']
-        self.opt.logger.info('learning rate %.7f -> %.7f' % (old_lr, lr))
+            lr = self.optimizers[0].param_groups[0]['lr']
+            self.opt.logger.info('learning rate %.7f -> %.7f' % (old_lr, lr))
+        else:
+            self.opt.logger.info("No scheduler is allotted")
 
     def _load_objects(self, file_names: List[str], object_names: List[str]):
         """Load objects from file

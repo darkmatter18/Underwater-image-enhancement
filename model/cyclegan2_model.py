@@ -45,7 +45,7 @@ class CycleGan2Model(BaseModel):
                                              n_epochs_decay=self.opt.n_epochs_decay) for optimizer in self.optimizers]
 
         if self.isTrain:
-            if self.opt.ct > 0:
+            if self.opt.ct is not None and self.opt.ct > 0:
                 self.opt.logger.info(f"Continue training from {self.opt.ct} Localing Model from {self.opt.ct-1}")
                 self.load_train_model(str(self.opt.ct-1))
 

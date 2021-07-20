@@ -39,6 +39,7 @@ class TestVisualizer:
         self.uciqes_r_a = []
         self.uciqes_r_b = []
         self.uciqes_f_b = []
+        self.save_path = None
 
     def display_inference(self):
         if self.visuals:
@@ -46,7 +47,7 @@ class TestVisualizer:
             fig, ax = plt.subplots(e, 4, figsize=(15, 4 * e))
             for i, (r_i, f_i, o_f_i, psnr, ssim, path_name, entropy, uiqm, uciqe) in \
                     enumerate(zip(self.real_images, self.fake_images, self.original_of_fake_images, self.psrns,
-                                  self.ssims, self.path_names, self.entropy, self.uiqms, self.uciqes)):
+                                  self.ssims, self.path_names, self.entropys_r_a, self.uiqms, self.uciqes)):    # TODO
                 ax[i, 0].imshow(r_i)
                 ax[i, 0].set_title("A type Real Image")
                 ax[i, 1].imshow(f_i)
@@ -61,24 +62,18 @@ class TestVisualizer:
             plt.show()
 
         if self.save_artifacts:
-            p = os.path.join(os.getcwd(), "output", "images")
-            mkdirs(p)
+            self.save_path = os.path.join(os.getcwd(), "output", "images")
+        if self.all:
+            self.save_path = os.path.join(os.getcwd(), "output", "metrics")
+
+        if self.all or self.save_artifacts:
+            mkdirs(self.save_path)
             for i, (r_i, f_i, o_f_i) in enumerate(zip(
                     self.real_images, self.fake_images, self.original_of_fake_images)):
-                mpimg.imsave(os.path.join(p, f"real_A_{self.opt.load_model}_{i}.jpg"), r_i)
-                mpimg.imsave(os.path.join(p, f"fake_A_{self.opt.load_model}_{i}.jpg"), f_i)
-                mpimg.imsave(os.path.join(p, f"real_B_{self.opt.load_model}_{i}.jpg"), o_f_i)
-            with open(os.path.join(p, f"{self.opt.load_model}_data.pkl"), 'wb+') as f:
-                pickle.dump({'psnr': self.psrns, 'ssim': self.ssims, 'entropy_r_a': self.entropys_r_a,
-                             'entropy_r_b': self.entropys_r_b, 'entropy_f_b': self.entropys_f_b,
-                             'uiqm_r_a': self.uiqms_r_a, 'uiqm_r_b': self.uiqms_r_b, 'uiqm_f_b': self.uiqms_f_b,
-                             'uciqm_r_a': self.uciqes_r_a, 'uciqm_r_b': self.uciqes_r_b, 'uciqm_f_b': self.uciqes_f_b,
-                             }, f)
-
-        if self.all:
-            p = os.path.join(os.getcwd(), "output", "metrics")
-            mkdirs(p)
-            with open(os.path.join(p, f"{self.opt.load_model}_data.pkl"), 'wb+') as f:
+                mpimg.imsave(os.path.join(self.save_path, f"real_A_{self.opt.load_model}_{i}.jpg"), r_i)
+                mpimg.imsave(os.path.join(self.save_path, f"fake_A_{self.opt.load_model}_{i}.jpg"), f_i)
+                mpimg.imsave(os.path.join(self.save_path, f"real_B_{self.opt.load_model}_{i}.jpg"), o_f_i)
+            with open(os.path.join(self.save_path, f"{self.opt.load_model}_data.pkl"), 'wb+') as f:
                 pickle.dump({'psnr': self.psrns, 'ssim': self.ssims, 'entropy_r_a': self.entropys_r_a,
                              'entropy_r_b': self.entropys_r_b, 'entropy_f_b': self.entropys_f_b,
                              'uiqm_r_a': self.uiqms_r_a, 'uiqm_r_b': self.uiqms_r_b, 'uiqm_f_b': self.uiqms_f_b,
@@ -102,9 +97,15 @@ class TestVisualizer:
                 ssim = structural_similarity(original_of_fake_i, fake_i, multichannel=True)
 
                 # Calculate only if --all_metrics is passed explicitly
-                entropy = None
-                uiqm = None
-                uciqe = None
+                entropy_f_b = None
+                entropy_r_a = None
+                entropy_r_b = None
+                uiqm_f_b = None
+                uiqm_r_a = None
+                uiqm_r_b = None
+                uciqe_f_b = None
+                uciqe_r_a = None
+                uciqe_r_b = None
                 if self.opt.all_metrics:
                     entropy_f_b = shannon_entropy(fake_i)
                     uiqm_f_b, uciqe_f_b = nmetrics(fake_i)
@@ -128,5 +129,7 @@ class TestVisualizer:
                 self.uciqes_f_b.append(uciqe_f_b)
                 self.uciqes_r_a.append(uciqe_r_a)
                 self.uciqes_r_b.append(uciqe_r_b)
-            except:
-                self.opt.logger.error(f"{image_path['a'][0]} File Not Found")
+            except FileNotFoundError as e:
+                self.opt.logger.error(f"{image_path['a'][0]} File Not Found, {e}")
+            except Exception as exp:
+                self.opt.logger.error(exp)

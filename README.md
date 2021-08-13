@@ -1,4 +1,21 @@
-# Underwater Image Enhancement
+<h1 align="center">Underwater Image Enhancement</h1>
+
+<p align="center">
+    <em>A Deep Learning CycleGAN Based application, that can enhance the underwater images.</em>
+</p>
+
+<p align="center">
+    <em>Collaboratively with 
+        <a href="https://github.com/dotslash21">
+            @dotslash21 
+        </a>
+        and
+        <a href="https://github.com/pranjalb21">
+            @pranjalb21
+        </a>
+    </em>
+</p>
+
 
 ## CycleGan Model
 ![CycleGan Arch](./doc_assets/images/model-diagram.png)

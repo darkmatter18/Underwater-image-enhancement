@@ -18,15 +18,15 @@
 
 
 ## CycleGan Model
-![CycleGan Arch](./doc_assets/images/model-diagram.png)
+![CycleGan Arch](Latex/model-diagram.png)
 
 ## Model Architecture
 
 ### 1. Generator
-![Generator Diagram](./doc_assets/images/generator.jpg)
+![Generator Diagram](Latex/generator.jpg)
 
 ### 2. Discriminator
-![Discriminator](./doc_assets/images/Discriminator.jpg)
+![Discriminator](Latex/Discriminator.jpg)
 
 ## Running Test
 ```bash

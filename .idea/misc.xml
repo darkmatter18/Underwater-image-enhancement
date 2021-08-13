@@ -3,7 +3,7 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <type id="Python" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

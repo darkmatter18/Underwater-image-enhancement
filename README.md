@@ -16,6 +16,14 @@
     </em>
 </p>
 
+<p align="center">
+    <em>
+        <a href="https://github.com/darkmatter18/Underwater-image-enhancement/blob/master/Underwater_Image_Enhancement.pdf">
+            Unpublished Research Paper (PDF)
+        </a>
+    </em>
+</p>
+
 
 ## CycleGan Model
 ![CycleGan Arch](Latex/model-diagram.png)

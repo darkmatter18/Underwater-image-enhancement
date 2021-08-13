@@ -1,5 +1,8 @@
 # Underwater Image Enhancement
 
+## CycleGan Model
+![CycleGan Arch](./doc_assets/images)
+
 ## Training Options
 ```bash
 Underwater Image Enhancement [-h] [--checkpoints_dir CHECKPOINTS_DIR]
